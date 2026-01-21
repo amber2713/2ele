@@ -5,12 +5,12 @@ export async function handler(event) {
     const { messages } = JSON.parse(event.body);
 
     const client = new OpenAI({
-      apiKey: process.env.MAAS_API_KEY,
-      baseURL: process.env.MAAS_API_BASE,
+      apiKey: process.env.API_KEY,      // 👈 对齐
+      baseURL: process.env.API_BASE,    // 👈 对齐
     });
 
     const response = await client.chat.completions.create({
-      model: process.env.MAAS_MODEL_ID,
+      model: process.env.MODEL_ID,      // 👈 对齐
       messages: [
         {
           role: "system",
@@ -22,21 +22,19 @@ export async function handler(event) {
       max_tokens: 1024,
       stream: false,
       extra_headers: {
-        lora_id: process.env.MAAS_LORA_ID,
+        lora_id: "0",                   // 👈 你截图里就是 0
       },
     });
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         content: response.choices[0].message.content,
       }),
     };
   } catch (err) {
-    console.error("调用失败：", err);
+    console.error("Function error:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({
