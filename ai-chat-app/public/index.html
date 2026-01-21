@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钱学森AI助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>钱学森AI助手</h1>
+            <div class="mode-controls">
+                <button id="streamBtn" class="active">流式输出</button>
+                <button id="clearBtn">清空历史</button>
+            </div>
+        </header>
+        <div id="chatContainer" class="chat-container">
+            <div class="message system-message">
+                <span class="role">系统提示：</span>
+                <span class="content">已初始化钱学森AI身份，将以其语气和知识回答问题，贴合科大风格～</span>
+            </div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="请输入您的问题... 输入 '退出' 结束对话">
+            <button id="sendBtn">发送</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
