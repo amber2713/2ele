@@ -1,28 +1,220 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Mr.Qian</title>
-</head>
-<body>
-  <h1>Mr.Qian（钱学森）</h1>
-  <textarea id="input"></textarea>
-  <button onclick="ask()">发送</button>
-  <pre id="output"></pre>
+<meta charset="UTF-8">
+<title>1958 Café</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    background: #000;
+    overflow: hidden;
+}
+.background {
+    position: fixed;
+    inset: 0;
+    background: url("images/1958bad.png") center/cover no-repeat;
+    filter: brightness(0.7);
+    z-index: -2;
+}
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: -1;
+}
+.content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+.title { font-size: 4rem; margin-bottom: 20px; }
+.subtitle { opacity: .8; margin-bottom: 50px; }
+.door-container { cursor: pointer; font-size: 80px; animation: pulse 2s infinite alternate; }
 
-  <script src="/script.js"></script>
-  <script>
-    async function ask() {
-      const input = document.getElementById("input").value;
-      const output = document.getElementById("output");
-      output.textContent = "思考中...";
-      try {
-        const reply = await sendMessage(input);
-        output.textContent = reply;
-      } catch (e) {
-        output.textContent = e.message;
-      }
+@keyframes pulse { from {transform: scale(1);} to {transform: scale(1.05);} }
+
+.inside-space {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: linear-gradient(135deg,#f8ecd8,#d9c7a7);
+}
+.inside-header {
+    text-align: center;
+    padding: 20px;
+    font-size: 2rem;
+}
+.inside-content {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+.girl-container img {
+    max-width: 360px;
+    border-radius: 12px;
+    animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+    0%{transform:translateY(0)}
+    50%{transform:translateY(-12px)}
+    100%{transform:translateY(0)}
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,255,255,.9);
+    border-radius: 14px;
+    padding: 15px;
+}
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.message {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    line-height: 1.5;
+}
+.message.user {
+    align-self: flex-end;
+    background: #8D6E63;
+    color: #fff;
+}
+.message.bot {
+    align-self: flex-start;
+    background: #E0D3C2;
+}
+.chat-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.chat-input input {
+    flex: 1;
+    border-radius: 30px;
+    border: none;
+    padding: 12px 18px;
+    font-size: 1rem;
+}
+.chat-input button {
+    width: 52px;
+    border-radius: 50%;
+    border: none;
+    background: #8D6E63;
+    color: #fff;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="background"></div>
+<div class="overlay"></div>
+
+<div class="content" id="outside">
+    <div class="title">1958 Café</div>
+    <div class="subtitle">Somewhere beyond time</div>
+    <div class="door-container" onclick="enterCafe()">
+        <i class="fas fa-door-open"></i>
+    </div>
+</div>
+
+<div class="inside-space" id="inside">
+    <div class="inside-header">Call Me USTC</div>
+    <div class="inside-content">
+        <div class="girl-container">
+            <img src="images/barista.jpg">
+        </div>
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">咖啡已经凉了一会儿了，不过你来得刚好。</div>
+            </div>
+            <div class="chat-input">
+                <input id="userInput" placeholder="和她说点什么吧…">
+                <button onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const chatHistory = [];
+
+function enterCafe() {
+    document.getElementById("outside").style.display = "none";
+    document.getElementById("inside").style.display = "flex";
+}
+
+function addMessage(text, sender) {
+    const div = document.createElement("div");
+    div.className = "message " + sender;
+    div.textContent = text;
+    document.getElementById("chatMessages").appendChild(div);
+    div.scrollIntoView({behavior:"smooth"});
+    return div;
+}
+
+// 打字机效果
+function typeWriter(element, text, speed = 40) {
+    element.textContent = "";
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            element.textContent += text[i++];
+            setTimeout(typing, speed);
+        }
     }
-  </script>
+    typing();
+}
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    addMessage(msg, "user");
+    chatHistory.push({ role: "user", content: msg });
+    input.value = "";
+
+    const botDiv = addMessage("……", "bot");
+
+    try {
+        const res = await fetch("/.netlify/functions/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: chatHistory })
+        });
+
+        const data = await res.json();
+        chatHistory.push({ role: "assistant", content: data.content });
+
+        typeWriter(botDiv, data.content, 35);
+
+    } catch (e) {
+        botDiv.textContent = "……咖啡馆的灯闪了一下。";
+    }
+}
+
+document.getElementById("userInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
 </body>
 </html>
