@@ -5,128 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1958 Café - A Timeless Experience</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        /* 基础样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Playfair Display', serif;
-        }
-
-        body {
-            overflow: hidden;
-            height: 100vh;
-            background: #000; /* 初始背景为黑，方便文字显示 */
-            color: #FFF8EF;
-        }
-
-        /* 1. 开场文字层 */
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 40px;
-            text-align: center;
-        }
-
-        #intro-text {
-            font-size: 1.8rem;
-            line-height: 1.6;
-            color: #d9c7a7;
-            max-width: 800px;
-            min-height: 1.2em;
-        }
-
-        /* 2. 门户展示层 (背景图 + 进门图标) */
-        #portal-view {
-            display: none; /* 初始隐藏 */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('./images/background.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            transition: opacity 1s ease;
-        }
-
-        /* 进门图标样式 */
-        .door-icon {
-            font-size: 80px;
-            color: #FFF8EF;
-            cursor: pointer;
-            transition: transform 0.3s ease, text-shadow 0.3s ease;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-        }
-
-        .door-icon:hover {
-            transform: scale(1.2);
-            text-shadow: 0 0 20px rgba(255, 248, 239, 0.8);
-        }
-
-        .door-label {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
-        /* 地图图标样式 */
-        .map-btn {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            font-size: 30px;
-            color: #FFF8EF;
-            background: rgba(0, 0, 0, 0.3);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .map-btn:hover {
-            transform: scale(1.2);
-            background: rgba(255, 248, 239, 0.2);
-        }
-
-        /* 3. 聊天空间 (你原本的 inside-space) */
-        .inside-space {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f8ecd8 0%, #d9c7a7 100%);
-            z-index: 20;
-            display: none; /* 初始隐藏 */
-            flex-direction: column;
-            padding: 40px;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        /* ... 你原本的其他 CSS 保持不变 (chat, messages, girl-container等) ... */
-        <style>
         * {
             margin: 0;
             padding: 0;
@@ -141,7 +20,22 @@
             color: #3E2723;
         }
 
-        /* 背景图 */
+        /* 新增：开场文字容器 */
+        .intro-text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            z-index: 1000;
+            color: #FFF8EF;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            font-size: 1.8rem;
+        }
+
+        /* 背景图 - 调整亮度确保幽静但不昏暗 */
         .background {
             position: absolute;
             top: 0;
@@ -151,9 +45,10 @@
             background-image: url('./images/background.jpg');
             background-size: cover;
             background-position: center;
-            filter: brightness(0.9);
+            filter: brightness(0.95); /* 调整亮度，比原来更亮一点，避免昏暗 */
             z-index: -1;
             transition: filter 1.5s ease;
+            display: none; /* 初始隐藏，开场文字结束后显示 */
         }
 
         /* 覆盖层 */
@@ -163,15 +58,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.25); /* 降低遮罩透明度，避免太暗 */
             z-index: 0;
+            display: none; /* 初始隐藏，开场文字结束后显示 */
         }
 
-        /* 导航和返回按钮 */
+        /* 导航栏：包含地图和返回按钮 */
         .nav-bar {
             position: absolute;
             top: 30px;
             right: 40px;
+            z-index: 100;
+            display: none; /* 初始隐藏，开场文字结束后显示 */
+            gap: 20px;
+            display: flex; /* 横向排列图标 */
+        }
+
+        /* 新增：地图按钮样式 */
+        .map-btn {
+            background: rgba(255, 248, 239, 0.7);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease; /* 悬停放大过渡 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 100;
         }
 
@@ -182,7 +97,7 @@
             height: 60px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; /* 悬停放大过渡 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -190,17 +105,25 @@
             z-index: 100;
         }
 
-        .back-btn:hover {
-            transform: scale(1.2);
+        /* 统一图标悬停放大效果 */
+        .map-btn:hover, .back-btn:hover, .door-container:hover, .square-btn:hover {
+            transform: scale(1.15); /* 悬停放大15%，更明显 */
+        }
+
+        .map-btn:hover {
             background: rgba(255, 248, 239, 0.9);
         }
 
-        .back-btn i {
+        .map-btn i, .back-btn i {
             font-size: 28px;
             color: #5D4037;
         }
 
-        /* 主内容区 */
+        .back-btn:hover {
+            background: rgba(255, 248, 239, 0.9);
+        }
+
+        /* 主内容区（进门图标） */
         .content {
             position: absolute;
             top: 50%;
@@ -210,6 +133,7 @@
             width: 100%;
             padding: 20px;
             z-index: 10;
+            display: none; /* 初始隐藏，开场文字结束后显示 */
         }
 
         .title {
@@ -235,38 +159,35 @@
             animation: fadeIn 1.8s ease-out forwards;
         }
 
-        /* 门入口 */
+        /* 门入口（进门图标）- 更显眼的样式 */
         .door-container {
             position: relative;
             display: inline-block;
             cursor: pointer;
-            transition: transform 0.5s ease;
+            transition: all 0.3s ease; /* 悬停放大过渡 */
             animation: pulse 2s infinite alternate;
-        }
-
-        .door-container:hover {
-            transform: scale(1.1);
-            animation: none;
+            margin-top: 50px;
         }
 
         .door {
-            font-size: 100px;
-            color: #8D6E63;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            font-size: 120px; /* 放大图标，更显眼 */
+            color: #FFF8EF; /* 白色图标，对比更明显 */
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* 发光效果，增强显眼度 */
         }
 
         .enter-text {
             position: absolute;
-            bottom: -30px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
             color: white;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+            font-size: 1.5rem; /* 放大文字 */
+            letter-spacing: 2px;
             animation: fadeIn 2s ease-out forwards;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
 
-        /* 内部空间样式 */
+        /* 内部空间样式 - 初始隐藏，点击进门后显示 */
         .inside-space {
             position: absolute;
             top: 0;
@@ -275,7 +196,7 @@
             height: 100%;
             background: linear-gradient(135deg, #f8ecd8 0%, #d9c7a7 100%);
             z-index: 20;
-            display: flex;
+            display: none; /* 初始隐藏 */
             flex-direction: column;
             padding: 40px;
             overflow: hidden;
@@ -308,7 +229,6 @@
             background: #8D6E63;
         }
 
-        /* 内部布局 */
         .inside-content {
             display: flex;
             height: calc(100% - 150px);
@@ -339,7 +259,6 @@
             animation: none;
         }
 
-        /* 聊天界面 */
         .chat-container {
             flex: 1;
             display: flex;
@@ -430,7 +349,6 @@
             font-size: 20px;
         }
 
-        /* 桌椅装饰 */
         .tables {
             position: absolute;
             bottom: 0;
@@ -475,7 +393,6 @@
             border-radius: 50%;
         }
 
-        /* 咖啡杯装饰 */
         .coffee-cup {
             position: absolute;
             bottom: 100px;
@@ -523,7 +440,6 @@
             animation-delay: 1s;
         }
 
-        /* 动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -531,7 +447,7 @@
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+            100% { transform: scale(1.08); }
         }
 
         @keyframes float {
@@ -551,7 +467,6 @@
             100% { text-shadow: 0 0 15px rgba(93, 64, 55, 0.8), 0 0 25px rgba(141, 110, 99, 0.6); }
         }
 
-        /* 左下角返回按钮 */
         .square-btn {
             position: fixed;
             bottom: 20px;
@@ -561,17 +476,12 @@
             height: 50px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; /* 悬停放大过渡 */
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 100;
-        }
-
-        .square-btn:hover {
-            transform: scale(1.1);
-            background: rgba(255, 248, 239, 0.9);
         }
 
         .square-btn i {
@@ -600,6 +510,19 @@
             
             .chat-container {
                 max-width: 100%;
+            }
+
+            .door {
+                font-size: 90px;
+            }
+
+            .map-btn, .back-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .map-btn i, .back-btn i {
+                font-size: 22px;
             }
         }
 
@@ -636,78 +559,59 @@
             .square-btn i {
                 font-size: 18px;
             }
+
+            .map-btn, .back-btn {
+                width: 45px;
+                height: 45px;
+            }
+
+            .map-btn i, .back-btn i {
+                font-size: 20px;
+            }
+
+            .intro-text-container {
+                font-size: 1.2rem;
+            }
+
+            .enter-text {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- ========== 你的 HTML 结构完全不动 ========== -->
-
-    <!-- 咖啡厅内部视图 -->
-    <div class="inside-space" id="insideSpace">
-        <div class="inside-header">
-            <h2 class="inside-title">Call Me USTC</h2>
-        </div>
-
-        <div class="inside-content">
-            <div class="girl-container">
-                <img src="./images/barista.jpg" alt="Friendly Barista" class="girl">
-            </div>
-
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot">
-                        The coffee has been sitting for a while, but you’ve come just in time.
-                    </div>
-                </div>
-
-                <div class="chat-input">
-                    <input type="text" id="userInput" placeholder="Type your message here..." autocomplete="off">
-                    <button onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-        .inside-header { text-align: center; margin-bottom: 30px; }
-        .inside-title { font-size: 3rem; color: #5D4037; position: relative; display: inline-block; animation: titleGlow 3s infinite alternate; }
-        .inside-content { display: flex; height: calc(100% - 150px); gap: 40px; }
-        .girl-container { flex: 1; display: flex; justify-content: center; align-items: center; }
-        .girl { width: 100%; max-width: 400px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: float 4s infinite ease-in-out; }
-        .chat-container { flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.85); border-radius: 15px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 80%; padding: 12px 18px; border-radius: 18px; font-size: 1.1rem; }
-        .message.bot { align-self: flex-start; background: #D7CCC8; color: #4E342E; }
-        .message.user { align-self: flex-end; background: #8D6E63; color: white; }
-        .chat-input { display: flex; gap: 10px; }
-        .chat-input input { flex: 1; padding: 15px; border-radius: 30px; border: none; background: #FFF8EF; }
-        .chat-input button { background: #8D6E63; color: white; border: none; width: 50px; border-radius: 50%; cursor: pointer; }
-
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes titleGlow { from { text-shadow: 0 0 5px rgba(93,64,55,0.3); } to { text-shadow: 0 0 15px rgba(93,64,55,0.6); } }
-    </style>
-</head>
-
-<body>
-
-    <div id="intro-overlay">
-        <div id="intro-text"></div>
+    <!-- 新增：开场打字文字容器 -->
+    <div class="intro-text-container" id="introTextContainer">
+        <div id="introText"></div>
     </div>
 
-    <div id="portal-view">
-        <a href="https://amber2713.github.io/test/map/" class="map-btn" title="View Map">
-            <i class="fas fa-map-marked-alt"></i>
-        </a>
-        
-        <div class="door-container" onclick="enterCafe()">
-            <div class="door-icon">
+    <!-- 背景图和遮罩 -->
+    <div class="background" id="background"></div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 导航栏：地图 + 返回按钮 -->
+    <div class="nav-bar" id="navBar">
+        <!-- 新增：地图按钮 -->
+        <button class="map-btn" id="mapBtn" title="View Map">
+            <i class="fas fa-map-marker-alt"></i>
+        </button>
+        <button class="back-btn" id="backBtn" title="Back">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+    </div>
+
+    <!-- 进门图标区域 -->
+    <div class="content" id="mainContent">
+        <div class="door-container" id="doorContainer">
+            <div class="door">
                 <i class="fas fa-door-open"></i>
             </div>
-            <div class="door-label">Enter the 1958</div>
+            <div class="enter-text">Click to Enter the Café</div>
         </div>
     </div>
 
+    <!-- 咖啡厅内部对话界面 -->
     <div class="inside-space" id="insideSpace">
         <div class="inside-header">
             <h2 class="inside-title">Call Me USTC</h2>
@@ -733,80 +637,125 @@
                 </div>
             </div>
         </div>
+
+        <!-- 装饰元素 -->
+        <div class="tables">
+            <div class="table"></div>
+            <div class="table"></div>
+            <div class="table"></div>
+        </div>
+        <div class="coffee-cup cup1"></div>
+        <div class="coffee-cup cup2"></div>
+        <div class="coffee-cup cup3"></div>
+
+        <!-- 左下角返回按钮 -->
+        <button class="square-btn" id="squareBackBtn" title="Back to Entrance">
+            <i class="fas fa-arrow-left"></i>
+        </button>
     </div>
 
 <script>
-/* ================= 逻辑控制 ================= */
-
-const introSentences = [
-    "You find yourself in the East Campus,",
-    "seeking a quiet corner for a brief rest.",
-    "A secluded café catches your eye...",
-    "Through the glass, you see a lady sitting by the window,",
-    "waiting in silence."
-];
-
-const introContainer = document.getElementById('intro-text');
-const introOverlay = document.getElementById('intro-overlay');
-const portalView = document.getElementById('portal-view');
-const insideSpace = document.getElementById('insideSpace');
-
-// 1. 打字机函数 (逐字)
-async function typeEffect(text, speed = 50) {
-    return new Promise(resolve => {
-        let i = 0;
-        introContainer.innerHTML = '';
-        function typing() {
-            if (i < text.length) {
-                introContainer.innerHTML += text.charAt(i++);
-                setTimeout(typing, speed);
-            } else {
-                setTimeout(resolve, 1000); // 每一句读完停顿一秒
-            }
-        }
-        typing();
-    });
-}
-
-// 2. 播放开场序列
-async function playIntro() {
-    for (let sentence of introSentences) {
-        await typeEffect(sentence);
-        // 渐隐当前句子，准备下一句
-        introContainer.style.opacity = 0;
-        await new Promise(r => setTimeout(r, 500));
-        introContainer.style.opacity = 1;
-    }
-    
-    // 文字结束后，淡出黑色遮罩，显示门户
-    introOverlay.style.transition = "opacity 2s ease";
-    introOverlay.style.opacity = 0;
-    setTimeout(() => {
-        introOverlay.style.display = "none";
-        portalView.style.display = "flex";
-        portalView.style.opacity = 1;
-    }, 2000);
-}
-
-// 3. 进入咖啡馆
-function enterCafe() {
-    portalView.style.opacity = 0;
-    setTimeout(() => {
-        portalView.style.display = "none";
-        insideSpace.style.display = "flex";
-        setTimeout(() => {
-            insideSpace.style.opacity = 1;
-        }, 50);
-    }, 1000);
-}
-
-// 启动
-window.onload = playIntro;
-
-/* ================= 聊天逻辑 (你原本的代码) ================= */
-
+// 多轮对话上下文
 const chatHistory = [];
 
+// ========== 新增：开场打字特效逻辑 ==========
+const introText = "You arrive at a quiet-looking café in the East Campus to rest your feet, and spot a lady sitting quietly by the window.";
+const introTextElement = document.getElementById('introText');
+const introTextContainer = document.getElementById('introTextContainer');
+const background = document.getElementById('background');
+const overlay = document.getElementById('overlay');
+const navBar = document.getElementById('navBar');
+const mainContent = document.getElementById('mainContent');
+const doorContainer = document.getElementById('doorContainer');
+const insideSpace = document.getElementById('insideSpace');
+const mapBtn = document.getElementById('mapBtn');
+const backBtn = document.getElementById('backBtn');
+const squareBackBtn = document.getElementById('squareBackBtn');
+
+// 打字机效果（通用）
+function typeWriter(element, text, speed = 30, callback) {
+    element.textContent = '';
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        } else {
+            // 打字完成后执行回调
+            if (callback) callback();
+        }
+    }
+    typing();
+}
+
+// 开场文字完成后显示背景和图标
+function showMainInterface() {
+    // 隐藏开场文字
+    introTextContainer.style.opacity = 0;
+    setTimeout(() => {
+        introTextContainer.style.display = 'none';
+        // 显示背景、遮罩、导航栏、进门图标
+        background.style.display = 'block';
+        overlay.style.display = 'block';
+        navBar.style.display = 'flex';
+        mainContent.style.display = 'block';
+    }, 500);
+}
+
+// 页面加载后执行开场打字
+window.addEventListener('DOMContentLoaded', () => {
+    // 执行开场文字打字特效
+    typeWriter(introTextElement, introText, 30, showMainInterface);
+
+    // ========== 地图按钮点击事件 ==========
+    mapBtn.addEventListener('click', () => {
+        window.open('https://amber2713.github.io/test/map/', '_blank'); // 新窗口打开地图
+    });
+
+    // ========== 进门图标点击事件 ==========
+    doorContainer.addEventListener('click', () => {
+        // 隐藏背景、遮罩、导航栏、进门图标
+        background.style.display = 'none';
+        overlay.style.display = 'none';
+        navBar.style.display = 'none';
+        mainContent.style.display = 'none';
+        // 显示对话界面
+        insideSpace.style.display = 'flex';
+    });
+
+    // ========== 返回按钮点击事件（右上角） ==========
+    backBtn.addEventListener('click', () => {
+        // 隐藏对话界面，显示主界面
+        insideSpace.style.display = 'none';
+        background.style.display = 'block';
+        overlay.style.display = 'block';
+        navBar.style.display = 'flex';
+        mainContent.style.display = 'block';
+    });
+
+    // ========== 返回按钮点击事件（左下角） ==========
+    squareBackBtn.addEventListener('click', () => {
+        insideSpace.style.display = 'none';
+        background.style.display = 'block';
+        overlay.style.display = 'block';
+        navBar.style.display = 'flex';
+        mainContent.style.display = 'block';
+    });
+
+    // 回车发送消息
+    const input = document.getElementById('userInput');
+    if (input) {
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+});
+
+// ========== 原有聊天逻辑 ==========
+// 添加消息
 function addMessage(text, sender) {
     const chatMessages = document.getElementById('chatMessages');
     const div = document.createElement('div');
@@ -817,18 +766,7 @@ function addMessage(text, sender) {
     return div;
 }
 
-function typeWriter(element, text, speed = 35) {
-    element.textContent = '';
-    let i = 0;
-    function typing() {
-        if (i < text.length) {
-            element.textContent += text.charAt(i++);
-            setTimeout(typing, speed);
-        }
-    }
-    typing();
-}
-
+// 发送消息（调用 Netlify 后端）
 async function sendMessage() {
     const input = document.getElementById('userInput');
     const message = input.value.trim();
@@ -844,20 +782,23 @@ async function sendMessage() {
         const res = await fetch('/.netlify/functions/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: chatHistory })
+            body: JSON.stringify({
+                messages: chatHistory
+            })
         });
+
         if (!res.ok) throw new Error(res.status);
+
         const data = await res.json();
         chatHistory.push({ role: 'assistant', content: data.content });
+
         typeWriter(botDiv, data.content);
+
     } catch (err) {
+        console.error(err);
         botDiv.textContent = '……the café\'s lights flickered softly.';
     }
 }
-
-document.getElementById('userInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') sendMessage();
-});
 </script>
 </body>
 </html>
