@@ -5,8 +5,6 @@ const client = new OpenAI({
     baseURL: process.env.API_BASE
 });
 
-const SYSTEM_PROMPT = process.env.AI_IDENTITY_PROMPT;
-
 exports.handler = async (event) => {
     try {
         const { messages } = JSON.parse(event.body);
@@ -14,7 +12,10 @@ exports.handler = async (event) => {
         const completion = await client.chat.completions.create({
             model: process.env.MODEL_ID,
             messages: [
-                { role: "system", content: SYSTEM_PROMPT },
+                {
+                    role: "system",
+                    content: process.env.AI_IDENTITY_PROMPT
+                },
                 ...messages
             ],
             temperature: 0.7,
@@ -30,7 +31,7 @@ exports.handler = async (event) => {
         };
 
     } catch (err) {
-        console.error(err);
+        console.error("Chat error:", err);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: err.message })
