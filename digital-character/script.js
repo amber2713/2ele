@@ -1,30 +1,17 @@
-body {
-  background: black;
-  color: white;
-  font-family: Cambria, serif;
-  text-align: center;
-}
+async function generate() {
+  const k1 = document.getElementById("k1").value;
+  const k2 = document.getElementById("k2").value;
+  const k3 = document.getElementById("k3").value;
 
-.inputs {
-  margin-top: 30px;
-}
+  const res = await fetch("/.netlify/functions/generate", {
+    method: "POST",
+    body: JSON.stringify({ k1, k2, k3 }),
+  });
 
-input {
-  margin: 10px;
-  padding: 10px;
-  width: 200px;
-}
+  const data = await res.json();
 
-button {
-  padding: 10px 30px;
-  cursor: pointer;
-}
-
-img {
-  margin-top: 30px;
-  max-width: 500px;
-}
-
-.hidden {
-  display: none;
+  document.getElementById("img").src = data.image;
+  document.getElementById("poem").innerText = data.poem;
+  document.getElementById("poem_en").innerText = data.poem_en;
+  document.getElementById("result").classList.remove("hidden");
 }
