@@ -30,27 +30,45 @@
 
     <script>
         async function generate() {
-            const btn = document.getElementById('btn');
-            const keywords = [document.getElementById('kw1').value, document.getElementById('kw2').value, document.getElementById('kw3').value];
-            
-            btn.innerText = "生成中...约需30秒";
-            btn.disabled = true;
+    const btn = document.getElementById('btn');
+    const resultDiv = document.getElementById('result');
+    const keywords = [
+        document.getElementById('kw1').value, 
+        document.getElementById('kw2').value, 
+        document.getElementById('kw3').value
+    ];
+    
+    // 简单的校验
+    if (!keywords[0]) return alert("请输入关键词");
 
-            try {
-                const res = await fetch('/.netlify/functions/generate', {
-                    method: 'POST',
-                    body: JSON.stringify({ keywords })
-                });
-                const data = await res.json();
-                
-                document.getElementById('outputImg').src = data.imageUrl;
-                document.getElementById('outputPoem').innerText = data.poem;
-                document.getElementById('outputTrans').innerText = data.translation;
-                document.getElementById('result').classList.remove('hidden');
-            } catch (e) { alert("生成失败，请检查 API 配置"); }
-            btn.innerText = "开始生成";
-            btn.disabled = false;
+    btn.innerText = "正在塑造角色中...";
+    btn.disabled = true;
+    resultDiv.classList.add('hidden'); // 生成前先隐藏旧结果
+
+    try {
+        const res = await fetch('/.netlify/functions/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ keywords })
+        });
+        
+        const data = await res.json();
+        
+        if (data.imageUrl) {
+            document.getElementById('outputImg').src = data.imageUrl;
+            document.getElementById('outputPoem').innerText = data.poem;
+            document.getElementById('outputTrans').innerText = data.translation;
+            resultDiv.classList.remove('hidden'); // 成功后再显示
+        } else {
+            throw new Error(data.error || "生成失败");
         }
+    } catch (e) {
+        alert("生成出错: " + e.message);
+    } finally {
+        btn.innerText = "开始生成";
+        btn.disabled = false;
+    }
+}
     </script>
 </body>
 </html>
