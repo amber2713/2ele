@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Build Your Digital Character</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Build Your Digital Character</h1>
+  <p class="desc">Please enter three keywords</p>
+
+  <div class="inputs">
+    <input id="k1" placeholder="Keyword 1" />
+    <input id="k2" placeholder="Keyword 2" />
+    <input id="k3" placeholder="Keyword 3" />
+    <button onclick="generate()">Create</button>
+  </div>
+
+  <div id="result" class="hidden">
+    <img id="img" />
+    <pre id="poem"></pre>
+    <pre id="poem_en"></pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
