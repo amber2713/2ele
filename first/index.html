@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Character Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-4xl font-bold mb-2">Build Your Digital Character</h1>
+        <p class="text-slate-400 mb-8">请输入三个关键词来塑造你的赛博数字人形象</p>
+        
+        <div class="flex gap-4 mb-8">
+            <input type="text" id="kw1" placeholder="关键词 1" class="flex-1 p-2 rounded bg-slate-800 border border-slate-700">
+            <input type="text" id="kw2" placeholder="关键词 2" class="flex-1 p-2 rounded bg-slate-800 border border-slate-700">
+            <input type="text" id="kw3" placeholder="关键词 3" class="flex-1 p-2 rounded bg-slate-800 border border-slate-700">
+        </div>
+
+        <button onclick="generate()" id="btn" class="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded font-bold transition">开始生成</button>
+
+        <div id="result" class="mt-12 hidden">
+            <img id="outputImg" class="w-72 mx-auto rounded-lg shadow-2xl mb-8 border-2 border-purple-500">
+            <div class="bg-slate-800 p-6 rounded-lg italic">
+                <p id="outputPoem" class="text-xl text-purple-300 whitespace-pre-line mb-4"></p>
+                <p id="outputTrans" class="text-sm text-slate-400"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function generate() {
+            const btn = document.getElementById('btn');
+            const keywords = [document.getElementById('kw1').value, document.getElementById('kw2').value, document.getElementById('kw3').value];
+            
+            btn.innerText = "生成中...约需30秒";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/.netlify/functions/generate', {
+                    method: 'POST',
+                    body: JSON.stringify({ keywords })
+                });
+                const data = await res.json();
+                
+                document.getElementById('outputImg').src = data.imageUrl;
+                document.getElementById('outputPoem').innerText = data.poem;
+                document.getElementById('outputTrans').innerText = data.translation;
+                document.getElementById('result').classList.remove('hidden');
+            } catch (e) { alert("生成失败，请检查 API 配置"); }
+            btn.innerText = "开始生成";
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
