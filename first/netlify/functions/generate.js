@@ -1,9 +1,8 @@
 const axios = require('axios');
 
 exports.handler = async (event) => {
-  // 预检请求处理
   if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type" } };
+    return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization" } };
   }
 
   try {
@@ -11,41 +10,37 @@ exports.handler = async (event) => {
     const apiKey = process.env.SILICON_API_KEY;
     const baseUrl = "https://api.siliconflow.cn/v1";
 
-    // 1. 调用 DeepSeek 模型优化提示词并生成诗句 [cite: 134, 153]
+    // 1. 调用语言模型优化提示词和生成诗句 [cite: 134, 140]
     const dsResponse = await axios.post(`${baseUrl}/chat/completions`, {
       model: "deepseek-ai/DeepSeek-V3", 
       messages: [
-        { role: "system", content: "你是一个专业的AI指令专家和诗人。请根据3个关键词生成：1. 适合Kolors模型的英文全身人像描述(100字内)；2. 一首中文律诗；3. 诗的英文翻译。请严格以JSON格式返回：{\"prompt\":\"...\", \"poem\":\"...\", \"translation\":\"...\"}" },
-        { role: "user", content: `关键词：${keywords.join(', ')}` }
+        { role: "system", content: "You are a professional prompt engineer and poet. Based on 3 keywords, provide: 1. A detailed English prompt for a full-body cyberpunk character (under 100 words). 2. A Chinese poem. 3. English translation of the poem. Return ONLY JSON: {\"prompt\":\"...\", \"poem\":\"...\", \"translation\":\"...\"}" },
+        { role: "user", content: `Keywords: ${keywords.join(', ')}` }
       ],
       response_format: { type: "json_object" }
-    }, { headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" } });
+    }, { headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" } });
 
     const content = JSON.parse(dsResponse.data.choices[0].message.content);
 
-    // 2. 调用图片生成 API [cite: 5, 9, 20]
+    // 2. 创建图片生成请求 [cite: 2, 9]
     const imgResponse = await axios.post(`${baseUrl}/images/generations`, {
-      model: "Kwai-Kolors/Kolors", // 指定模型 [cite: 61]
-      prompt: `(full body shot), cyberpunk style, digital character, ${content.prompt}`, // 拼接关键词 [cite: 29]
-      image_size: "720x1440", // 文档支持的 1:2 比例 [cite: 47]
-      num_inference_steps: 25, // 推理步数 [cite: 68]
-      guidance_scale: 7.5 // 引导规模 [cite: 74, 76]
-    }, { headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" } });
+      model: "Kwai-Kolors/Kolors", [cite: 61]
+      prompt: `(full body shot), cyberpunk digital human, 3D render, ${content.prompt}`, [cite: 29]
+      image_size: "720x1440", [cite: 39, 47]
+      num_inference_steps: 25, [cite: 68, 70]
+      guidance_scale: 7.5 [cite: 74, 76]
+    }, { headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" } });
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({
-        imageUrl: imgResponse.data.images[0].url, // 返回图片链接 [cite: 3]
+        imageUrl: imgResponse.data.images[0].url, [cite: 3, 123]
         poem: content.poem,
         translation: content.translation
       })
     };
   } catch (error) {
-    console.error("Error details:", error.response ? error.response.data : error.message);
-    return { 
-      statusCode: 500, 
-      body: JSON.stringify({ error: "生成失败，请检查 API Key 或网络", details: error.message }) 
-    };
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };
