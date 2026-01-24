@@ -1,10 +1,10 @@
 const crypto = require("crypto");
 const fetch = require("node-fetch");
 
+// ===== HMAC 仅给 Image 用 =====
 function buildAuth(apiKey, apiSecret, host, path) {
     const date = new Date().toUTCString();
     const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST ${path} HTTP/1.1`;
-
     const signature = crypto
         .createHmac("sha256", apiSecret)
         .update(signatureOrigin)
@@ -15,67 +15,70 @@ function buildAuth(apiKey, apiSecret, host, path) {
     return { authorization, date };
 }
 
-async function xfPost(path, body) {
-    const host = "maas-api.cn-huabei-1.xf-yun.com";
-    const auth = buildAuth(
-        process.env.XF_API_KEY,
-        process.env.XF_API_SECRET,
-        host,
-        path
-    );
-
-    const res = await fetch(`https://${host}${path}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Host: host,
-            Date: auth.date,
-            Authorization: auth.authorization,
-        },
-        body: JSON.stringify(body)
-    });
-
-    const text = await res.text();
-    console.log("XF RESPONSE:", text);
-    return JSON.parse(text);
-}
-
 exports.handler = async function (event) {
     try {
         const { k1, k2, k3 } = JSON.parse(event.body);
         const keywords = `${k1} ${k2} ${k3}`;
 
-        // ===== Qwen3（HMAC）=====
-        const qwenData = await xfPost("/v2/chat/completions", {
-            model: process.env.QWEN_MODEL_ID,
-            messages: [{
-                role: "user",
-                content: `用关键词 ${keywords} 写七言绝句、英文翻译，并润色成赛博风格全身数字人prompt。JSON输出 poem, poem_en, prompt`
-            }]
+        // ===== 第一步：Qwen3（Bearer，干净请求头）=====
+        const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.QWEN_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: process.env.QWEN_MODEL_ID,
+                messages: [{
+                    role: "user",
+                    content: `用关键词 ${keywords} 写七言绝句、英文翻译，并润色为赛博风格全身数字人prompt。JSON输出 poem, poem_en, prompt`
+                }],
+                response_format: { type: "json_object" }
+            })
         });
 
+        const qwenData = await qwenRes.json();
         const result = JSON.parse(qwenData.choices[0].message.content);
 
-        // ===== Image（HMAC）=====
-        const imgData = await xfPost("/v2.1/tti", {
-            header: {
-                app_id: process.env.XF_APP_ID,
-                uid: "123"
+        // ===== 第二步：Image（HMAC）=====
+        const host = "maas-api.cn-huabei-1.xf-yun.com";
+        const path = "/v2.1/tti";
+        const auth = buildAuth(
+            process.env.IMAGE_API_KEY,
+            process.env.IMAGE_API_SECRET,
+            host,
+            path
+        );
+
+        const imgRes = await fetch(`https://${host}${path}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Host: host,
+                Date: auth.date,
+                Authorization: auth.authorization,
             },
-            parameter: {
-                chat: {
-                    domain: process.env.IMAGE_MODEL_ID,
-                    width: 768,
-                    height: 1024
+            body: JSON.stringify({
+                header: {
+                    app_id: process.env.IMAGE_APP_ID,
+                    uid: "123"
+                },
+                parameter: {
+                    chat: {
+                        domain: process.env.IMAGE_MODEL_ID,
+                        width: 768,
+                        height: 1024
+                    }
+                },
+                payload: {
+                    message: {
+                        text: [{ role: "user", content: result.prompt }]
+                    }
                 }
-            },
-            payload: {
-                message: {
-                    text: [{ role: "user", content: result.prompt }]
-                }
-            }
+            })
         });
 
+        const imgData = await imgRes.json();
         const base64 = imgData.payload.choices.text[0].content;
 
         return {
