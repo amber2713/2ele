@@ -3,16 +3,22 @@ exports.handler = async function(event) {
 const {k1,k2,k3} = JSON.parse(event.body);
 const keywords = `${k1} ${k2} ${k3}`;
 
-// ====== 第一步：Qwen3 生成诗 + 英文 + Prompt ======
+// 从环境变量读取
+const QWEN_API_KEY = process.env.QWEN_API_KEY;
+const QWEN_MODEL_ID = process.env.QWEN_MODEL_ID;
+const IMAGE_MODEL_ID = process.env.IMAGE_MODEL_ID;
+const IMAGE_APP_ID = process.env.IMAGE_APP_ID;
+
+// ====== 第一步：Qwen3 推理 ======
 
 const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2",{
     method:"POST",
     headers:{
         "Content-Type":"application/json",
-        "Authorization":"Bearer sk-qiXqtAiI5QEGrK0bD90e79Af68724a75824dFd286b5b91F5"
+        "Authorization":`Bearer ${QWEN_API_KEY}`
     },
     body:JSON.stringify({
-        model:"xop3qwen1b7",
+        model:QWEN_MODEL_ID,
         messages:[{
             role:"user",
             content:`用关键词 ${keywords} 写一首七言绝句，并翻译成英文。再将这三个词润色为适合生成赛博风格全身数字人的英文prompt。按JSON输出：poem, poem_en, prompt`
@@ -24,7 +30,7 @@ const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2",{
 const qwenData = await qwenRes.json();
 const result = JSON.parse(qwenData.choices[0].message.content);
 
-// ====== 第二步：Qwen-Image 生成图片 ======
+// ====== 第二步：文生图 ======
 
 const imgRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2.1/tti",{
     method:"POST",
@@ -33,12 +39,12 @@ const imgRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2.1/tti",{
     },
     body:JSON.stringify({
         header:{
-            app_id:"a3af8563",
+            app_id:IMAGE_APP_ID,
             uid:"123"
         },
         parameter:{
             chat:{
-                domain:"xopqwentti20b",
+                domain:IMAGE_MODEL_ID,
                 width:768,
                 height:1024,
                 seed:42,
