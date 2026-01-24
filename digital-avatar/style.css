@@ -1,125 +1,74 @@
 body {
-  margin: 0;
-  font-family: Cambria, serif;
-  background: #0f1220;
-  color: #e8faff;
-  overflow: hidden;
+    margin:0;
+    font-family: Cambria, serif;
+    background: #1a1a1a;
+    color: #f5deb3;
+    overflow:hidden;
 }
 
-canvas#bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
+#bg {
+    position:fixed;
+    z-index:-1;
 }
 
-header {
-  text-align: center;
-  padding: 25px;
-  position: relative;
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    padding:20px 40px;
+    font-size:28px;
 }
 
-h1 {
-  font-size: 40px;
-  letter-spacing: 3px;
-  text-shadow: 0 0 15px #7afcff;
+.explore{
+    cursor:pointer;
+    font-size:20px;
 }
 
-.explore {
-  position: absolute;
-  right: 40px;
-  top: 30px;
-  text-decoration: none;
-  color: #ffd6ff;
-  border: 1px solid #ffd6ff;
-  padding: 6px 14px;
-  transition: 0.3s;
+.container{
+    display:flex;
+    height:80vh;
+    padding:40px;
 }
 
-.explore:hover {
-  background: #ffd6ff;
-  color: black;
+.left{
+    width:40%;
 }
 
-main {
-  display: flex;
-  height: calc(100vh - 120px);
-  padding: 30px 60px;
-  gap: 40px;
+.right{
+    width:60%;
+    text-align:center;
+    position:relative;
 }
 
-.left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+input{
+    width:80%;
+    padding:15px;
+    margin:10px 0;
+    font-size:18px;
 }
 
-.inputs {
-  background: rgba(255,255,255,0.05);
-  padding: 25px;
-  border: 1px solid rgba(255,255,255,0.15);
+button{
+    padding:12px 30px;
+    font-size:18px;
 }
 
-input {
-  width: 100%;
-  padding: 16px;
-  margin-bottom: 12px;
-  font-size: 18px;
-  border: 1px solid #7afcff;
-  background: rgba(0,0,0,0.4);
-  color: #7afcff;
+#img{
+    max-height:80vh;
 }
 
-button {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  border: 1px solid #7afcff;
-  background: transparent;
-  color: #7afcff;
-  cursor: pointer;
+.loader{
+    border:10px solid #333;
+    border-top:10px solid #f5deb3;
+    border-radius:50%;
+    width:80px;
+    height:80px;
+    animation:spin 1s linear infinite;
+    position:absolute;
+    top:40%;
+    left:45%;
 }
 
-.poems {
-  background: rgba(255,255,255,0.05);
-  padding: 20px;
-  flex: 1;
-  overflow-y: auto;
-}
+.hidden{ display:none; }
 
-pre {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  font-size: 16px;
-}
-
-/* 加载动画 */
-.loading-poem,
-.loading-image {
-  display: none;
-  font-size: 18px;
-  color: #ffd6ff;
-  animation: blink 1.2s infinite;
-}
-
-@keyframes blink {
-  0%,100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-.right {
-  flex: 1;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#image {
-  max-width: 100%;
-  max-height: 90%;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-  border: 1px solid #7afcff;
+@keyframes spin{
+    100%{ transform:rotate(360deg);}
 }
