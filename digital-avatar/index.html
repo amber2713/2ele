@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Create Your Digital Avatar</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -25,6 +25,8 @@
       <button onclick="generate()">GENERATE</button>
     </div>
 
+    <div class="loading-poem" id="loadingPoem">Generating poem...</div>
+
     <div class="poems">
       <h3>Chinese Poem</h3>
       <pre id="poem_cn"></pre>
@@ -34,6 +36,7 @@
   </div>
 
   <div class="right">
+    <div class="loading-image" id="loadingImage">Rendering avatar...</div>
     <img id="image" />
   </div>
 </main>
