@@ -1,19 +1,40 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Character Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Serif+SC:wght@700&display=swap');
-        body { background: #020617; color: #e2e8f0; font-family: sans-serif; }
-        .cyber-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(139, 92, 246, 0.2); }
-        .title-font { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #8b5cf6; }
-        .poem-font { font-family: 'Noto Serif SC', serif; }
-        .neon-border { border: 2px solid #8b5cf6; box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
+        /* 全局使用 Cambria 字体 */
+        body { 
+            background: #020617; 
+            color: #e2e8f0; 
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+        }
         
-        /* 探索图标动画 */
+        .cyber-panel { 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(139, 92, 246, 0.2); 
+        }
+
+        /* 标题使用大写 Cambria 增强仪式感 */
+        .title-font { 
+            text-shadow: 0 0 10px #8b5cf6; 
+            letter-spacing: 0.05em;
+        }
+
+        /* 只有诗句部分保留 Noto Serif SC 以支持中文字体美感 */
+        .poem-font { 
+            font-family: 'Noto Serif SC', Cambria, serif; 
+        }
+
+        .neon-border { 
+            border: 2px solid #8b5cf6; 
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); 
+        }
+        
         .explore-btn {
             transition: all 0.3s ease;
             background: rgba(139, 92, 246, 0.2);
@@ -31,19 +52,19 @@
     <div class="max-w-6xl w-full">
         <header class="mb-8">
             <h1 class="title-font text-3xl font-bold text-purple-400">BUILD YOUR DIGITAL CHARACTER</h1>
-            <p class="text-slate-500 text-xs tracking-widest">QWEN 1.7B & POLLINATIONS HYBRID SYSTEM</p>
+            <p class="text-slate-500 text-xs tracking-widest uppercase">QWEN 1.7B & POLLINATIONS HYBRID SYSTEM</p>
         </header>
 
         <main class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-2/5 space-y-6">
                 <div class="cyber-panel p-6 rounded-2xl">
-                    <h3 class="text-sm font-bold mb-4 text-purple-300 tracking-tighter uppercase">// 输入参数</h3>
+                    <h3 class="text-sm font-bold mb-4 text-purple-300 tracking-tighter uppercase">// INPUT PARAMETERS</h3>
                     <div class="space-y-3">
-                        <input type="text" id="kw1" placeholder="特征 (Subject)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm focus:border-purple-500 outline-none transition">
-                        <input type="text" id="kw2" placeholder="服装 (Outfit)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm focus:border-purple-500 outline-none transition">
-                        <input type="text" id="kw3" placeholder="背景 (Scene)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm focus:border-purple-500 outline-none transition">
+                        <input type="text" id="kw1" placeholder="Subject (e.g. Mechanical Samurai)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm focus:border-purple-500 outline-none transition">
+                        <input type="text" id="kw2" placeholder="Outfit (e.g. Neon Kimono)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm focus:border-purple-500 outline-none transition">
+                        <input type="text" id="kw3" placeholder="Scene (e.g. Cyber Tokyo)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-sm focus:border-purple-500 outline-none transition">
                     </div>
-                    <button onclick="generate()" id="btn" class="w-full mt-6 bg-purple-600 hover:bg-purple-500 p-3 rounded-lg font-bold transition-all active:scale-95">开始合成</button>
+                    <button onclick="generate()" id="btn" class="w-full mt-6 bg-purple-600 hover:bg-purple-500 p-3 rounded-lg font-bold transition-all active:scale-95 uppercase tracking-wider">Start Synthesis</button>
                 </div>
 
                 <div id="poemBox" class="hidden cyber-panel p-6 rounded-2xl min-h-[200px] border-l-4 border-l-purple-500">
@@ -57,21 +78,24 @@
             <div class="lg:w-3/5 relative">
                 <div onclick="location.href='https://www.bilibili.com/'" 
                      class="explore-btn absolute top-4 right-4 z-10 w-12 h-12 rounded-full border border-purple-400 flex items-center justify-center cursor-pointer" 
-                     title="探索 Bilibili">
+                     title="Explore Bilibili">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                     </svg>
                 </div>
 
-                <div id="placeholder" class="aspect-square w-full border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-700">
-                    等待初始化数据...
+                <div id="placeholder" class="aspect-square w-full border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-700 uppercase tracking-widest text-sm">
+                    Awaiting Initialization...
                 </div>
                 
                 <img id="outImg" class="hidden w-full aspect-square object-cover rounded-3xl neon-border">
                 
                 <div id="loader" class="hidden absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center rounded-3xl">
                     <div class="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <span class="text-purple-400 font-mono text-xs animate-pulse">正在解析赛博数据...</span>
+                    <span class="text-purple-400 font-mono text-xs animate-pulse text-center leading-relaxed">
+                        SYNTHESIZING CYBER DATA...<br>
+                        正在解析赛博数据...
+                    </span>
                 </div>
             </div>
         </main>
@@ -79,8 +103,13 @@
 
     <script>
         async function generate() {
-            const kws = [document.getElementById('kw1').value, document.getElementById('kw2').value, document.getElementById('kw3').value].filter(v => v.trim());
-            if (kws.length < 1) return alert("请输入关键词");
+            const kws = [
+                document.getElementById('kw1').value, 
+                document.getElementById('kw2').value, 
+                document.getElementById('kw3').value
+            ].filter(v => v.trim());
+            
+            if (kws.length < 1) return alert("Please enter at least one keyword.");
 
             const btn = document.getElementById('btn');
             const poemBox = document.getElementById('poemBox');
@@ -89,7 +118,7 @@
             const placeholder = document.getElementById('placeholder');
 
             btn.disabled = true;
-            btn.innerText = "数据同步中...";
+            btn.innerText = "PROCESSING...";
             loader.classList.remove('hidden');
             placeholder.classList.add('hidden');
 
@@ -100,11 +129,12 @@
                 });
                 const data = await res.json();
 
+                // 渲染左侧生成的诗句（中文）与翻译
                 document.getElementById('outPoem').innerText = data.poem;
                 document.getElementById('outTrans').innerText = data.trans;
                 poemBox.classList.remove('hidden');
 
-                // 修改点：width=720&height=720 使图片变短为正方形
+                // 请求 720x720 正方形图片
                 const finalPrompt = encodeURIComponent(`cyberpunk digital human, ${data.imgP}`);
                 const seed = Math.floor(Math.random() * 99999);
                 const imgUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=720&height=720&nologo=true&seed=${seed}`;
@@ -117,12 +147,12 @@
                 };
 
             } catch (e) {
-                alert("合成中断");
+                alert("Protocol Error. Please try again.");
                 loader.classList.add('hidden');
                 placeholder.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
-                btn.innerText = "开始合成";
+                btn.innerText = "START SYNTHESIS";
             }
         }
     </script>
