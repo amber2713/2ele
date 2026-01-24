@@ -1,101 +1,39 @@
-const fetch = require("node-fetch");
+const axios = require('axios');
 
-exports.handler = async function (event) {
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 200,
-      body: "Function is alive. Please POST."
-    };
-  }
+exports.handler = async (event) => {
+    if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
 
-  try {
-    const body = JSON.parse(event.body || "{}");
-    const { k1, k2, k3 } = body;
+    try {
+        const { keywords } = JSON.parse(event.body);
+        // 从您的截图中提取的信息
+        const apiKey = "sk-qiXqtAil5QEGrK0bD90e79Af68724a75824dFd286b5b91F5"; 
+        const baseUrl = "https://maas-api.cn-huabei-1.xf-yun.com/v1";
+        const modelId = "xop3qwen1b7";
 
-    if (!k1 || !k2 || !k3) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Missing keywords" })
-      };
+        // 1. 调用您的 Qwen 模型生成提示词和诗歌
+        const response = await axios.post(`${baseUrl}/chat/completions`, {
+            model: modelId,
+            messages: [
+                { 
+                    role: "system", 
+                    content: "你是一个赛博设计师。根据3个关键词，生成：1.一段详细的赛博朋克风格数字人全身照英文描述；2.一首关于该角色的中文律诗；3.诗的英文翻译。请务必只返回JSON格式：{\"imgP\":\"...\", \"poem\":\"...\", \"trans\":\"...\"}" 
+                },
+                { role: "user", content: `关键词：${keywords.join(', ')}` }
+            ],
+            temperature: 0.7, // 保持一定的随机性 [cite: 773, 822]
+            response_format: { type: "json_object" } // 强制输出 JSON [cite: 838]
+        }, {
+            headers: { "Authorization": `Bearer ${apiKey}` }
+        });
+
+        // 解析模型返回的内容 [cite: 924]
+        const content = JSON.parse(response.data.choices[0].message.content);
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(content)
+        };
+    } catch (error) {
+        return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
-
-    const keywords = `${k1}, ${k2}, ${k3}`;
-    const API_KEY = process.env.SILICON_API_KEY;
-
-    // ===== 通用函数：调用 Qwen =====
-    async function callQwen(prompt) {
-      const res = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "Qwen/Qwen2-7B-Instruct",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7
-        })
-      });
-
-      const json = await res.json();
-      if (!json.choices) {
-        throw new Error(JSON.stringify(json));
-      }
-      return json.choices[0].message.content;
-    }
-
-    // ========= 1. 优化绘画 Prompt =========
-    const finalPrompt = await callQwen(
-      `将这三个关键词扩展成用于生成 cyberpunk 风格、全身、数字人的英文绘画提示词：${keywords}`
-    );
-
-    // ========= 2. Kolors 生成图片 =========
-    const imgRes = await fetch("https://api.siliconflow.cn/v1/images/generations", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "Kwai-Kolors/Kolors",
-        prompt: finalPrompt,
-        image_size: "1024x1024",
-        guidance_scale: 8,
-        num_inference_steps: 30
-      })
-    });
-
-    const imgJson = await imgRes.json();
-    if (!imgJson.images) {
-      throw new Error("Image error: " + JSON.stringify(imgJson));
-    }
-
-    // ⚠️ 硅基流动返回字段是 image 不是 url
-    const imageUrl = imgJson.images[0].image;
-
-    // ========= 3. 中文七言律诗 =========
-    const poem = await callQwen(
-      `根据这三个关键词写一首七言律诗：${keywords}`
-    );
-
-    // ========= 4. 英文翻译 =========
-    const poem_en = await callQwen(
-      `把这首中文诗翻译成英文诗：\n${poem}`
-    );
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        image: imageUrl,
-        poem,
-        poem_en
-      })
-    };
-
-  } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message })
-    };
-  }
 };
