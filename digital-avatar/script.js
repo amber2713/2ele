@@ -19,8 +19,21 @@ async function generate(){
         return;
     }
 
-    poem.textContent = data.poem;
-    poem_en.textContent = data.poem_en;
+    function formatPoem(text){
+    return text
+        // 中文断句
+        .replace(/，/g, "，\n")
+        .replace(/。/g, "。\n")
+        // 英文断句
+        .replace(/, /g, ",\n")
+        .replace(/\. /g, ".\n")
+        // 去除多余空行
+        .replace(/\n+/g, "\n")
+        .trim();
+}
+
+poem.textContent = formatPoem(data.poem);
+poem_en.textContent = formatPoem(data.poem_en);
     img.src = "data:image/png;base64," + data.image;
 }
 
