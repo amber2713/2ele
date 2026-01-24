@@ -1,4 +1,4 @@
-function typeText(el, text, speed = 20) {
+function typeText(el, text, speed = 18) {
   el.innerText = "";
   let i = 0;
   const timer = setInterval(() => {
@@ -10,7 +10,15 @@ function typeText(el, text, speed = 20) {
 
 async function generate() {
   const img = document.getElementById("image");
+  const loadPoem = document.getElementById("loadingPoem");
+  const loadImg = document.getElementById("loadingImage");
+
   img.style.opacity = 0;
+  loadPoem.style.display = "block";
+  loadImg.style.display = "block";
+
+  poem_cn.innerText = "";
+  poem_en.innerText = "";
 
   const res = await fetch("/.netlify/functions/generate", {
     method: "POST",
@@ -23,9 +31,13 @@ async function generate() {
 
   const data = await res.json();
 
-  img.src = "data:image/png;base64," + data.image;
-  setTimeout(() => img.style.opacity = 1, 300);
+  loadPoem.style.display = "none";
+  typeText(poem_cn, data.poem);
+  typeText(poem_en, data.poem_en);
 
-  typeText(document.getElementById("poem_cn"), data.poem, 18);
-  typeText(document.getElementById("poem_en"), data.poem_en, 18);
+  img.src = "data:image/png;base64," + data.image;
+  setTimeout(() => {
+    loadImg.style.display = "none";
+    img.style.opacity = 1;
+  }, 800);
 }
