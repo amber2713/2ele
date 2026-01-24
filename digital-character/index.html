@@ -1,27 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Build Your Digital Character</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <h1>Build Your Digital Character</h1>
-  <p class="desc">Please enter three keywords</p>
+<script>
+    async function generateAll() {
+        const btn = document.getElementById('genBtn');
+        const resultArea = document.getElementById('resultArea');
+        const imgLoader = document.getElementById('imgLoader');
+        const kwInputs = [
+            document.getElementById('kw1').value,
+            document.getElementById('kw2').value,
+            document.getElementById('kw3').value
+        ].filter(k => k.trim() !== "");
 
-  <div class="inputs">
-    <input id="k1" placeholder="Keyword 1" />
-    <input id="k2" placeholder="Keyword 2" />
-    <input id="k3" placeholder="Keyword 3" />
-    <button onclick="generate()">Create</button>
-  </div>
+        if (kwInputs.length < 1) return alert("请至少输入一个关键词");
 
-  <div id="result" class="hidden">
-    <img id="img" />
-    <pre id="poem"></pre>
-    <pre id="poem_en"></pre>
-  </div>
+        btn.innerText = "Qwen 正在构思中...";
+        btn.disabled = true;
+        resultArea.classList.add('hidden');
+        imgLoader.classList.remove('hidden');
 
-  <script src="script.js"></script>
-</body>
-</html>
+        try {
+            // 1. 调用 Netlify 后端函数（内部访问 Qwen 模型）
+            const res = await fetch('/.netlify/functions/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keywords: kwInputs })
+            });
+            const data = await res.json();
+
+            // 2. 渲染诗词
+            document.getElementById('outputPoem').innerText = data.poem;
+            document.getElementById('outputTrans').innerText = data.trans;
+            resultArea.classList.remove('hidden');
+
+            // 3. 将 Qwen 生成的英文提示词发送给 Pollinations
+            // 固定全身照比例 1:2 (512x1024)
+            const finalImgPrompt = encodeURIComponent(`full body shot, cyberpunk style, digital human, ${data.imgP}`);
+            const imageUrl = `https://image.pollinations.ai/prompt/${finalImgPrompt}?width=512&height=1024&nologo=true&seed=${Math.floor(Math.random()*100000)}`;
+            
+            const imgNode = document.getElementById('outputImg');
+            imgNode.src = imageUrl;
+            
+            imgNode.onload = () => {
+                imgLoader.classList.add('hidden');
+            };
+
+        } catch (e) {
+            alert("请求失败，请检查模型运行状态或后端配置");
+            console.error(e);
+        } finally {
+            btn.innerText = "即刻生成 (Qwen + Pollinations)";
+            btn.disabled = false;
+        }
+    }
+</script>
