@@ -1,10 +1,8 @@
 const crypto = require("crypto");
 const fetch = require("node-fetch");
 
-// ===== HMAC 签名函数（只给图片接口用）=====
 function buildAuth(apiKey, apiSecret, host, path) {
     const date = new Date().toUTCString();
-
     const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST ${path} HTTP/1.1`;
 
     const signature = crypto
@@ -17,88 +15,67 @@ function buildAuth(apiKey, apiSecret, host, path) {
     return { authorization, date };
 }
 
+async function xfPost(path, body) {
+    const host = "maas-api.cn-huabei-1.xf-yun.com";
+    const auth = buildAuth(
+        process.env.XF_API_KEY,
+        process.env.XF_API_SECRET,
+        host,
+        path
+    );
+
+    const res = await fetch(`https://${host}${path}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Host: host,
+            Date: auth.date,
+            Authorization: auth.authorization,
+        },
+        body: JSON.stringify(body)
+    });
+
+    const text = await res.text();
+    console.log("XF RESPONSE:", text);
+    return JSON.parse(text);
+}
+
 exports.handler = async function (event) {
     try {
         const { k1, k2, k3 } = JSON.parse(event.body);
         const keywords = `${k1} ${k2} ${k3}`;
 
-        // =========================
-        // 第一步：Qwen3 推理（Bearer）
-        // =========================
-        const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.QWEN_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: process.env.QWEN_MODEL_ID,
-                messages: [{
-                    role: "user",
-                    content: `用关键词 ${keywords} 写一首七言绝句，并翻译成英文。再将这三个词润色为适合生成赛博风格全身数字人的英文prompt。按JSON输出：poem, poem_en, prompt`
-                }],
-                response_format: { type: "json_object" }
-            })
+        // ===== Qwen3（HMAC）=====
+        const qwenData = await xfPost("/v2/chat/completions", {
+            model: process.env.QWEN_MODEL_ID,
+            messages: [{
+                role: "user",
+                content: `用关键词 ${keywords} 写七言绝句、英文翻译，并润色成赛博风格全身数字人prompt。JSON输出 poem, poem_en, prompt`
+            }]
         });
 
-        const qwenText = await qwenRes.text();
-        console.log("QWEN RESPONSE:", qwenText);
-
-        const qwenData = JSON.parse(qwenText);
         const result = JSON.parse(qwenData.choices[0].message.content);
 
-        // =========================
-        // 第二步：Qwen-Image 生图（HMAC）
-        // =========================
-        const host = "maas-api.cn-huabei-1.xf-yun.com";
-        const path = "/v2.1/tti";
-
-        const auth = buildAuth(
-            process.env.IMAGE_API_KEY,
-            process.env.IMAGE_API_SECRET,
-            host,
-            path
-        );
-
-        const imgRes = await fetch(`https://${host}${path}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Host: host,
-                Date: auth.date,
-                Authorization: auth.authorization,
+        // ===== Image（HMAC）=====
+        const imgData = await xfPost("/v2.1/tti", {
+            header: {
+                app_id: process.env.XF_APP_ID,
+                uid: "123"
             },
-            body: JSON.stringify({
-                header: {
-                    app_id: process.env.IMAGE_APP_ID,
-                    uid: "123"
-                },
-                parameter: {
-                    chat: {
-                        domain: process.env.IMAGE_MODEL_ID,
-                        width: 768,
-                        height: 1024,
-                        seed: 42,
-                        num_inference_steps: 20,
-                        guidance_scale: 6,
-                        scheduler: "Euler"
-                    }
-                },
-                payload: {
-                    message: {
-                        text: [{
-                            role: "user",
-                            content: result.prompt
-                        }]
-                    }
+            parameter: {
+                chat: {
+                    domain: process.env.IMAGE_MODEL_ID,
+                    width: 768,
+                    height: 1024
                 }
-            })
+            },
+            payload: {
+                message: {
+                    text: [{ role: "user", content: result.prompt }]
+                }
+            }
         });
 
-        const imgText = await imgRes.text();
-        console.log("IMAGE RESPONSE:", imgText);
-
-        const imgData = JSON.parse(imgText);
         const base64 = imgData.payload.choices.text[0].content;
 
         return {
@@ -114,7 +91,7 @@ exports.handler = async function (event) {
         console.log("FINAL ERROR:", err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: err.toString() })
+            body: err.toString()
         };
     }
 };
