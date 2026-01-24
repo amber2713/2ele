@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<div class="scanlines"></div>
+<canvas id="bg"></canvas>
 
 <header>
   <h1>Create Your Digital Avatar</h1>
@@ -16,23 +16,29 @@
 </header>
 
 <main>
-  <div class="left-panel">
-    <p class="hint">Enter three keywords to summon your digital being</p>
-    <input id="k1" placeholder="Keyword 1" />
-    <input id="k2" placeholder="Keyword 2" />
-    <input id="k3" placeholder="Keyword 3" />
-    <button onclick="generate()">GENERATE</button>
+  <div class="left">
+    <div class="inputs">
+      <p class="hint">Enter three keywords</p>
+      <input id="k1" placeholder="Keyword 1" />
+      <input id="k2" placeholder="Keyword 2" />
+      <input id="k3" placeholder="Keyword 3" />
+      <button onclick="generate()">GENERATE</button>
+    </div>
+
+    <div class="poems">
+      <h3>Chinese Poem</h3>
+      <pre id="poem_cn"></pre>
+      <h3>English Translation</h3>
+      <pre id="poem_en"></pre>
+    </div>
   </div>
 
-  <div class="right-panel">
+  <div class="right">
     <img id="image" />
-    <div class="poem">
-      <p id="poem"></p>
-      <p id="poem_en"></p>
-    </div>
   </div>
 </main>
 
+<script src="bg.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
