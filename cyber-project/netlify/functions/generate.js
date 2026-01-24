@@ -1,69 +1,79 @@
 const axios = require('axios');
 
 exports.handler = async (event) => {
-    if (event.httpMethod !== "POST") return { statusCode: 405 };
+    if (event.httpMethod !== "POST") {
+        return { statusCode: 405, body: "Method Not Allowed" };
+    }
 
     const { prompts } = JSON.parse(event.body);
-    const API_KEY = process.env.SPARK_API_KEY; 
-    const APPID = process.env.SPARK_APPID;
+
+    // --- 环境变量命名区分 ---
+    // 语言模型 (对应第一张图: random wander)
+    const TEXT_API_KEY = process.env.TEXT_MODEL_API_KEY; 
+    const TEXT_MODEL_ID = "xop3qwen1b7"; // 截图1中的 modelId [cite: 57]
+    const TEXT_BASE_URL = "https://maas-api.cn-huabei-1.xf-yun.com/v1"; // 截图1中的接口地址 
+
+    // 文生图模型 (对应第二张图: prompt)
+    const IMAGE_APPID = process.env.IMAGE_MODEL_APPID;
+    const IMAGE_API_KEY = process.env.IMAGE_MODEL_API_KEY;
+    const IMAGE_MODEL_ID = "xopqwentti20b"; // 截图2中的 modelId [cite: 291]
+    const IMAGE_BASE_URL = "https://maas-api.cn-huabei-1.xf-yun.com/v2.1/tti"; // 截图2和文档地址 [cite: 190, 277]
 
     try {
-        // --- 第一步：调用语言模型 (模型 ID: xop3qwen1b7) ---
-        // 使用 OpenAI 兼容格式接口 [cite: 18, 28]
-        const textRes = await axios.post('https://maas-api.cn-huabei-1.xf-yun.com/v2/chat/completions', {
-            model: "xop3qwen1b7", // 截图 1 中的语言模型 ID
+        // 1. 调用语言模型：优化 Prompt 并生成双语诗句
+        const textResponse = await axios.post(`${TEXT_BASE_URL}/chat/completions`, {
+            model: TEXT_MODEL_ID,
             messages: [
-                { role: "system", content: "You are a cyberpunk AI. Always reply in JSON format." },
-                { role: "user", content: `Inputs: ${prompts.join(', ')}. 
-                  Generate: 1. A short English poem. 2. A Chinese translation. 3. A detailed image prompt for a FULL BODY SHOT of a cyberpunk character. 
-                  JSON format: {"en":"", "zh":"", "img_p":""}` }
+                { role: "system", content: "You are a cyberpunk digital character creator. Return ONLY JSON." },
+                { role: "user", content: `Based on keywords: ${prompts.join(', ')}. 
+                  Return JSON: {"en_poem":"...", "zh_poem":"...", "draw_prompt":"full body shot, cyberpunk style, [more details]"}` }
             ],
-            response_format: { type: "json_object" } // 文档提到支持 JSON Mode [cite: 70, 97]
+            // 强制要求输出 JSON 格式
+            response_format: { "type": "json_object" } [cite: 70, 97]
         }, {
-            headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }
+            headers: { 'Authorization': `Bearer ${TEXT_API_KEY}` } [cite: 18]
         });
 
-        // 解析语言模型生成的 JSON 数据 [cite: 52, 121]
-        const sparkResponse = JSON.parse(textRes.data.choices[0].message.content);
+        const resContent = JSON.parse(textResponse.data.choices[0].message.content);
 
-        // --- 第二步：调用文生图模型 (模型 ID: xopqwentti20b) ---
-        // 使用 TTI 专用接口 [cite: 190, 277]
-        const imageRes = await axios.post('https://maas-api.cn-huabei-1.xf-yun.com/v2.1/tti', {
-            header: { 
-                app_id: APPID // 对应截图 2 中的 APPID [cite: 198, 285]
+        // 2. 调用文生图模型：传入语言模型生成的 draw_prompt
+        const imageResponse = await axios.post(IMAGE_BASE_URL, {
+            header: {
+                app_id: IMAGE_APPID [cite: 198, 285]
             },
             parameter: {
                 chat: {
-                    domain: "xopqwentti20b", // 截图 2 中的文生图模型 ID [cite: 204, 291]
-                    width: 768, 
+                    domain: IMAGE_MODEL_ID, [cite: 204, 291]
+                    width: 768,
                     height: 1024 // 设定为全身照比例 [cite: 228, 315]
                 }
             },
             payload: {
                 message: {
-                    text: [{ role: "user", content: sparkResponse.img_p }] // 使用语言模型生成的指令 [cite: 216, 303]
+                    text: [{ role: "user", content: resContent.draw_prompt }] [cite: 216, 303]
                 }
             }
         }, {
-            headers: { 'Authorization': `Bearer ${API_KEY}` }
+            headers: { 'Authorization': `Bearer ${IMAGE_API_KEY}` }
         });
 
-        // 获取图片 Base64 结果 [cite: 247, 334]
-        const base64Image = imageRes.data.payload.choices.text[0].content;
+        // 提取返回的 Base64 图片数据
+        const base64Data = imageResponse.data.payload.choices.text[0].content; [cite: 247, 334]
 
         return {
             statusCode: 200,
             body: JSON.stringify({
-                poemEn: sparkResponse.en,
-                poemZh: sparkResponse.zh,
-                image: base64Image // 前端直接显示 Base64
+                poemEn: resContent.en_poem,
+                poemZh: resContent.zh_poem,
+                image: base64Data
             })
         };
 
-    } catch (err) {
+    } catch (error) {
+        console.error(error);
         return { 
             statusCode: 500, 
-            body: JSON.stringify({ error: "Neural link failed", details: err.message }) 
+            body: JSON.stringify({ error: "Failed to link to Spark Neural Network." }) 
         };
     }
 };
