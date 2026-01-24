@@ -11,18 +11,27 @@ body {
     z-index:-1;
 }
 
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    padding:20px 40px;
-    font-size:28px;
+.title-center{
+    position:absolute;
+    top:30px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:48px;
+    letter-spacing:3px;
 }
 
 .explore{
+    position:absolute;
+    top:35px;
+    right:60px;
     cursor:pointer;
-    font-size:20px;
+    font-size:22px;
+    transition: transform 0.3s ease;
 }
 
+.explore:hover{
+    transform: scale(1.25);
+}
 .container{
     display:flex;
     height:80vh;
@@ -69,7 +78,14 @@ button{
 
 .poem{
     white-space: pre-line;
-    line-height: 1.8;
+    font-size:24px;   /* 原来18 */
+    line-height:2;    /* 更有呼吸感 */
+}
+
+.poem-title{
+    margin-top:16px;
+    font-size:22px;
+    opacity:0.85;
 }
 
 .hidden{ display:none; }
