@@ -4,22 +4,20 @@
     <meta charset="UTF-8">
     <title>Cyber Character Creator</title>
     <style>
-        :root { --blue: #00f3ff; --pink: #ff00ff; --bg: #050505; }
-        body { background: var(--bg); color: var(--blue); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { padding: 20px; text-align: center; border-bottom: 2px solid var(--pink); position: relative; box-shadow: 0 0 10px var(--pink); }
-        .explore-btn { position: absolute; top: 25px; right: 30px; color: var(--blue); border: 1px solid var(--blue); padding: 5px 15px; text-decoration: none; font-size: 14px; }
-        .explore-btn:hover { background: var(--blue); color: #000; box-shadow: 0 0 15px var(--blue); }
+        :root { --cyan: #00f3ff; --pink: #ff00ff; --bg: #050505; }
+        body { background: var(--bg); color: var(--cyan); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { padding: 20px; text-align: center; border-bottom: 2px solid var(--pink); position: relative; }
+        .explore-btn { position: absolute; top: 25px; right: 30px; color: var(--cyan); border: 1px solid var(--cyan); padding: 5px 15px; text-decoration: none; }
         main { display: flex; flex: 1; padding: 30px; gap: 30px; }
         .left-panel { flex: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center; }
-        .right-panel { flex: 1.5; border: 1px solid var(--blue); background: rgba(0, 243, 255, 0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        input { background: #111; border: 1px solid var(--blue); color: #fff; padding: 15px; outline: none; }
-        button { background: transparent; border: 1px solid var(--pink); color: var(--pink); padding: 15px; cursor: pointer; font-weight: bold; letter-spacing: 2px; }
+        .right-panel { flex: 1.5; border: 1px solid var(--cyan); background: rgba(0, 243, 255, 0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
+        input { background: #111; border: 1px solid var(--cyan); color: #fff; padding: 15px; outline: none; }
+        button { background: transparent; border: 1px solid var(--pink); color: var(--pink); padding: 15px; cursor: pointer; font-weight: bold; }
         button:hover:not(:disabled) { background: var(--pink); color: #000; box-shadow: 0 0 20px var(--pink); }
-        button:disabled { opacity: 0.5; cursor: wait; }
-        #res-img { max-width: 100%; border: 1px solid var(--pink); display: none; margin-bottom: 20px; box-shadow: 0 0 15px rgba(255,0,255,0.3); }
-        .poem-container { text-align: center; }
-        .zh { color: #fff; font-size: 1.1rem; margin-top: 10px; }
-        #status { font-size: 12px; color: var(--pink); margin-bottom: 10px; }
+        #res-img { max-width: 100%; max-height: 400px; border: 1px solid var(--pink); display: none; margin-bottom: 20px; }
+        .poem-container { text-align: center; font-size: 0.9rem; }
+        .zh { color: #fff; margin-top: 8px; font-family: "Microsoft YaHei", sans-serif; }
+        #status { font-size: 12px; color: var(--pink); margin-bottom: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -29,13 +27,13 @@
     </header>
     <main>
         <div class="left-panel">
-            <input type="text" id="p1" placeholder="Character Trait...">
-            <input type="text" id="p2" placeholder="Environment...">
-            <input type="text" id="p3" placeholder="Action/Weapon...">
-            <button id="btn" onclick="generate()">INITIALIZE SYSTEM</button>
+            <input type="text" id="p1" placeholder="Core Trait (e.g. Chrome Skin)">
+            <input type="text" id="p2" placeholder="Environment (e.g. Neon Alley)">
+            <input type="text" id="p3" placeholder="Action (e.g. Standing Tall)">
+            <button id="btn" onclick="generate()">INITIALIZE GENERATION</button>
         </div>
         <div class="right-panel">
-            <div id="status">SYSTEM READY</div>
+            <div id="status">SYSTEM IDLE</div>
             <img id="res-img" src="">
             <div class="poem-container">
                 <div id="out-en"></div>
@@ -47,15 +45,15 @@
         async function generate() {
             const btn = document.getElementById('btn');
             const status = document.getElementById('status');
+            const img = document.getElementById('res-img');
             const prompts = [document.getElementById('p1').value, document.getElementById('p2').value, document.getElementById('p3').value];
             
             if(!prompts[0]) return alert("Input required.");
 
             btn.disabled = true;
-            status.innerText = "LINKING TO NEURAL NETWORK...";
+            status.innerText = "UPLOADING DATA TO NEURAL NETWORK...";
 
             try {
-                // 注意：路径必须是这个，Netlify 才能找到后台函数
                 const res = await fetch('/.netlify/functions/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -63,17 +61,16 @@
                 });
                 
                 const data = await res.json();
-                if(res.status !== 200) throw new Error(data.error || "Server Error");
+                if(!res.ok) throw new Error(data.details || data.error || "Server Error");
 
-                const img = document.getElementById('res-img');
                 img.src = `data:image/png;base64,${data.image}`;
                 img.style.display = 'block';
                 document.getElementById('out-en').innerText = data.poemEn;
                 document.getElementById('out-zh').innerText = data.poemZh;
-                status.innerText = "SYNC COMPLETE.";
+                status.innerText = "GENERATION SUCCESSFUL.";
             } catch (e) {
-                status.innerText = "CONNECTION FAILED: " + e.message;
-                console.error(e);
+                status.innerText = "ERROR: " + e.message;
+                console.error("Full Error:", e);
             } finally {
                 btn.disabled = false;
             }
