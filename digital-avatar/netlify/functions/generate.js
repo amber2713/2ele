@@ -33,24 +33,31 @@ exports.handler = async function (event) {
             body: JSON.stringify({
                 model: process.env.QWEN_MODEL_ID,
                 messages: [{
-                    role: "user",
-                    content: `
-                        你必须严格按下面JSON格式输出：
+                          role: "user",
+                          content: `
+                        你需要按步骤完成任务：
+                        
+                        步骤1：
+                        先根据关键词写一首【中文七言绝句】。
+                        
+                        步骤2：
+                        把这首中文诗翻译成自然流畅的英文，不要再创作，只做翻译。
+                        
+                        步骤3：
+                        把关键词润色成一个【赛博风格、全身数字人、英文绘画prompt】。
+                        
+                        最后，严格按下面JSON格式输出，不要添加任何解释：
                         
                         {
-                          "poem": "一首中文七言绝句，只能是中文诗句",
-                          "poem_en": "上面这首中文诗的英文翻译，不允许再写诗",
-                          "prompt": "用于生成赛博风格全身数字人的英文绘画prompt,注意生成的人物形象需要时满足输入关键词的个人全身像"
+                          "poem": "步骤1写的中文七言绝句",
+                          "poem_en": "步骤2的英文翻译",
+                          "prompt": "步骤3的英文prompt"
                         }
                         
                         关键词：${keywords}
-                        
-                        要求：
-                        - poem 必须是中文七言绝句
-                        - poem_en 必须是对 poem 的英文翻译
-                        - 不能输出除JSON外的任何内容
                         `
-                }],
+                        }],
+response_format: { type: "json_object" }
                 response_format: { type: "json_object" }
             })
         });
