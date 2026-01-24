@@ -1,8 +1,8 @@
 body {
   margin: 0;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: Cambria, serif;
   background: #0f1220;
-  color: #d6faff;
+  color: #e8faff;
   overflow: hidden;
 }
 
@@ -52,7 +52,7 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .inputs {
@@ -61,60 +61,59 @@ main {
   border: 1px solid rgba(255,255,255,0.15);
 }
 
-.hint {
-  margin-bottom: 15px;
-  opacity: 0.8;
-}
-
 input {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   margin-bottom: 12px;
-  background: rgba(0,0,0,0.4);
+  font-size: 18px;
   border: 1px solid #7afcff;
+  background: rgba(0,0,0,0.4);
   color: #7afcff;
-  font-size: 16px;
 }
 
 button {
   width: 100%;
-  padding: 14px;
-  background: transparent;
+  padding: 16px;
+  font-size: 18px;
   border: 1px solid #7afcff;
+  background: transparent;
   color: #7afcff;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #7afcff;
-  color: black;
 }
 
 .poems {
   background: rgba(255,255,255,0.05);
-  padding: 25px;
-  border: 1px solid rgba(255,255,255,0.15);
+  padding: 20px;
   flex: 1;
   overflow-y: auto;
-}
-
-.poems h3 {
-  margin-top: 0;
-  color: #ffd6ff;
 }
 
 pre {
   white-space: pre-wrap;
   line-height: 1.6;
-  font-size: 15px;
+  font-size: 16px;
+}
+
+/* 加载动画 */
+.loading-poem,
+.loading-image {
+  display: none;
+  font-size: 18px;
+  color: #ffd6ff;
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 0.3; }
+  50% { opacity: 1; }
 }
 
 .right {
   flex: 1;
+  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 #image {
