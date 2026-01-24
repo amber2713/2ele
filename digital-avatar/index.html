@@ -1,39 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Create Your Digital Avatar</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Create Your Digital Avatar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <canvas id="bg"></canvas>
 
 <div class="topbar">
-  <div class="explore" onclick="location.href='https://www.bilibili.com'">Explore</div>
+    <div class="explore" onclick="location.href='https://www.bilibili.com'">Explore</div>
 </div>
 
 <div class="title-center">
-  Create Your Digital Avatar
+    Create Your Digital Avatar
 </div>
 
 <div class="container">
-  <div class="left">
-      <input id="k1" placeholder="Keyword 1">
-      <input id="k2" placeholder="Keyword 2">
-      <input id="k3" placeholder="Keyword 3">
-      <button onclick="generate()">Generate</button>
+    <div class="left">
+        <input id="k1" placeholder="Keyword 1">
+        <input id="k2" placeholder="Keyword 2">
+        <input id="k3" placeholder="Keyword 3">
+        <button onclick="generate()">Generate</button>
 
-      <div id="poemBox">
-         <pre id="poem" class="poem"></pre>
-          <pre id="poem_en" class="poem"></pre>
-      </div>
-  </div>
+        <div id="poemDisplay" class="poem-container"></div>
+    </div>
 
-  <div class="right">
-      <div id="loader" class="loader hidden"></div>
-      <img id="img"/>
-  </div>
+    <div class="right">
+        <div id="loader" class="loader hidden"></div>
+        <img id="img"/>
+    </div>
 </div>
 
 <script src="script.js"></script>
