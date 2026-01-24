@@ -1,107 +1,38 @@
-body {
-  margin: 0;
-  font-family: 'Share Tech Mono', monospace;
-  background: radial-gradient(circle at center, #0b0f1a, #05070d);
-  color: #8ef9ff;
-  overflow-x: hidden;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Create Your Digital Avatar</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
 
-/* 扫描线效果 */
-.scanlines::before {
-  content: "";
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events: none;
-}
+<body>
+<div class="scanlines"></div>
 
-header {
-  text-align: center;
-  padding: 30px;
-  position: relative;
-}
+<header>
+  <h1>Create Your Digital Avatar</h1>
+  <a class="explore" href="https://www.bilibili.com">explore</a>
+</header>
 
-h1 {
-  font-size: 42px;
-  text-shadow: 0 0 10px #00f7ff, 0 0 30px #00f7ff;
-  letter-spacing: 3px;
-}
+<main>
+  <div class="left-panel">
+    <p class="hint">Enter three keywords to summon your digital being</p>
+    <input id="k1" placeholder="Keyword 1" />
+    <input id="k2" placeholder="Keyword 2" />
+    <input id="k3" placeholder="Keyword 3" />
+    <button onclick="generate()">GENERATE</button>
+  </div>
 
-.explore {
-  position: absolute;
-  right: 40px;
-  top: 40px;
-  text-decoration: none;
-  color: #ff3cff;
-  border: 1px solid #ff3cff;
-  padding: 6px 14px;
-  transition: 0.3s;
-}
+  <div class="right-panel">
+    <img id="image" />
+    <div class="poem">
+      <p id="poem"></p>
+      <p id="poem_en"></p>
+    </div>
+  </div>
+</main>
 
-.explore:hover {
-  background: #ff3cff;
-  color: black;
-  box-shadow: 0 0 10px #ff3cff;
-}
-
-main {
-  display: flex;
-  padding: 40px;
-  gap: 40px;
-}
-
-.left-panel, .right-panel {
-  flex: 1;
-  border: 1px solid rgba(0,255,255,0.2);
-  padding: 30px;
-  background: rgba(0,0,0,0.35);
-  box-shadow: 0 0 20px rgba(0,255,255,0.1);
-}
-
-.hint {
-  margin-bottom: 20px;
-  opacity: 0.7;
-}
-
-input {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  background: black;
-  border: 1px solid #00f7ff;
-  color: #00f7ff;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background: transparent;
-  border: 1px solid #00f7ff;
-  color: #00f7ff;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #00f7ff;
-  color: black;
-  box-shadow: 0 0 20px #00f7ff;
-}
-
-#image {
-  width: 100%;
-  margin-bottom: 20px;
-  border: 1px solid #00f7ff;
-}
-
-.poem {
-  white-space: pre-line;
-  opacity: 0.85;
-}
+<script src="script.js"></script>
+</body>
+</html>
