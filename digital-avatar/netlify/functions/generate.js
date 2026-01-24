@@ -96,15 +96,32 @@ exports.handler = async function (event) {
         });
 
         const imgData = await imgRes.json();
-
-        if (!imgData.payload || !imgData.payload.choices) {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: "Image generation failed", raw: imgData })
-            };
-        }
-
-        const base64 = imgData.payload.choices.text[0].content;
+                console.log("IMAGE RAW:", JSON.stringify(imgData));
+                
+                // ===== 强力容错（关键）=====
+                let base64 = null;
+                
+                try {
+                    base64 =
+                        imgData?.payload?.choices?.text?.[0]?.content ||
+                        imgData?.payload?.choices?.[0]?.text?.[0]?.content ||
+                        null;
+                } catch (e) {
+                    base64 = null;
+                }
+                
+                if (!base64) {
+                    return {
+                        statusCode: 200,
+                        body: JSON.stringify({
+                            poem: result.poem,
+                            poem_en: result.poem_en,
+                            image: null,
+                            error: "Image generation unstable",
+                            raw: imgData
+                        })
+                    };
+                }
 
         return {
             statusCode: 200,
