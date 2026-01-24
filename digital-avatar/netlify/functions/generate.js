@@ -1,10 +1,9 @@
 const crypto = require("crypto");
 const fetch = require("node-fetch");
 
-// ===== 只给图片接口用的 HMAC =====
+// ===== Image 用的 HMAC =====
 function buildAuth(apiKey, apiSecret, host, path) {
     const date = new Date().toUTCString();
-
     const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST ${path} HTTP/1.1`;
 
     const signature = crypto
@@ -23,9 +22,9 @@ exports.handler = async function (event) {
         const keywords = `${k1} ${k2} ${k3}`;
 
         // =========================
-        // 第一步：Qwen3（严格 Bearer，不能有 Host/Date）
+        // Qwen3 —— 正确的 /v1 OpenAI 通道
         // =========================
-        const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2", {
+        const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -39,14 +38,8 @@ exports.handler = async function (event) {
 `用关键词 ${keywords}：
 1. 写一首七言绝句
 2. 给出英文翻译
-3. 将这三个词润色成适合生成赛博风格全身数字人的英文prompt
-
-严格按JSON输出：
-{
-  "poem": "...",
-  "poem_en": "...",
-  "prompt": "..."
-}`
+3. 将关键词润色为赛博风格全身数字人英文prompt
+JSON输出 poem, poem_en, prompt`
                 }],
                 response_format: { type: "json_object" }
             })
@@ -55,11 +48,10 @@ exports.handler = async function (event) {
         const qwenData = await qwenRes.json();
         console.log("QWEN RAW:", JSON.stringify(qwenData));
 
-        const content = qwenData.payload.choices.text[0].content;
-        const result = JSON.parse(content);
+        const result = JSON.parse(qwenData.choices[0].message.content);
 
         // =========================
-        // 第二步：Qwen-Image（HMAC）
+        // Image —— HMAC
         // =========================
         const host = "maas-api.cn-huabei-1.xf-yun.com";
         const path = "/v2.1/tti";
@@ -88,11 +80,7 @@ exports.handler = async function (event) {
                     chat: {
                         domain: process.env.IMAGE_MODEL_ID,
                         width: 768,
-                        height: 1024,
-                        seed: 42,
-                        num_inference_steps: 20,
-                        guidance_scale: 6,
-                        scheduler: "Euler"
+                        height: 1024
                     }
                 },
                 payload: {
@@ -124,7 +112,7 @@ exports.handler = async function (event) {
         console.log("FINAL ERROR:", err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: err.toString() })
+            body: err.toString()
         };
     }
 };
