@@ -1,47 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Create Your Digital Avatar</title>
-
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
 <canvas id="bg"></canvas>
 
-<header>
-  <h1>Create Your Digital Avatar</h1>
-  <a class="explore" href="https://www.bilibili.com">explore</a>
-</header>
+<div class="topbar">
+  <div class="title">Create Your Digital Avatar</div>
+  <div class="explore" onclick="location.href='https://www.bilibili.com'">Explore</div>
+</div>
 
-<main>
+<div class="container">
   <div class="left">
-    <div class="inputs">
-      <p class="hint">Enter three keywords</p>
-      <input id="k1" placeholder="Keyword 1" />
-      <input id="k2" placeholder="Keyword 2" />
-      <input id="k3" placeholder="Keyword 3" />
-      <button onclick="generate()">GENERATE</button>
-    </div>
+      <input id="k1" placeholder="Keyword 1">
+      <input id="k2" placeholder="Keyword 2">
+      <input id="k3" placeholder="Keyword 3">
+      <button onclick="generate()">Generate</button>
 
-    <div class="loading-poem" id="loadingPoem">Generating poem...</div>
-
-    <div class="poems">
-      <h3>Chinese Poem</h3>
-      <pre id="poem_cn"></pre>
-      <h3>English Translation</h3>
-      <pre id="poem_en"></pre>
-    </div>
+      <div id="poemBox">
+          <pre id="poem"></pre>
+          <pre id="poem_en"></pre>
+      </div>
   </div>
 
   <div class="right">
-    <div class="loading-image" id="loadingImage">Rendering avatar...</div>
-    <img id="image" />
+      <div id="loader" class="loader hidden"></div>
+      <img id="img"/>
   </div>
-</main>
+</div>
 
-<script src="bg.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
