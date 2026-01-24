@@ -12,6 +12,18 @@
         .title-font { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #8b5cf6; }
         .poem-font { font-family: 'Noto Serif SC', serif; }
         .neon-border { border: 2px solid #8b5cf6; box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
+        
+        /* 探索图标动画 */
+        .explore-btn {
+            transition: all 0.3s ease;
+            background: rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(4px);
+        }
+        .explore-btn:hover {
+            background: rgba(139, 92, 246, 0.6);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #8b5cf6;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-10 flex items-center justify-center">
@@ -42,15 +54,24 @@
                 </div>
             </div>
 
-            <div class="lg:w-3/5 h-[500px] lg:h-auto min-h-[600px] relative">
-                <div id="placeholder" class="absolute inset-0 border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-700">
+            <div class="lg:w-3/5 relative">
+                <div onclick="location.href='https://www.bilibili.com/'" 
+                     class="explore-btn absolute top-4 right-4 z-10 w-12 h-12 rounded-full border border-purple-400 flex items-center justify-center cursor-pointer" 
+                     title="探索 Bilibili">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                </div>
+
+                <div id="placeholder" class="aspect-square w-full border-2 border-dashed border-slate-800 rounded-3xl flex items-center justify-center text-slate-700">
                     等待初始化数据...
                 </div>
-                <img id="outImg" class="hidden w-full h-full object-cover rounded-3xl neon-border">
+                
+                <img id="outImg" class="hidden w-full aspect-square object-cover rounded-3xl neon-border">
                 
                 <div id="loader" class="hidden absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center rounded-3xl">
                     <div class="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <span class="text-purple-400 font-mono text-xs animate-pulse">正在构建赛博视觉...</span>
+                    <span class="text-purple-400 font-mono text-xs animate-pulse">正在解析赛博数据...</span>
                 </div>
             </div>
         </main>
@@ -68,27 +89,25 @@
             const placeholder = document.getElementById('placeholder');
 
             btn.disabled = true;
-            btn.innerText = "Qwen 正在计算...";
+            btn.innerText = "数据同步中...";
             loader.classList.remove('hidden');
             placeholder.classList.add('hidden');
 
             try {
-                // 1. 获取后端数据
                 const res = await fetch('/.netlify/functions/generate', {
                     method: 'POST',
                     body: JSON.stringify({ keywords: kws })
                 });
                 const data = await res.json();
 
-                // 2. 渲染左侧文字
                 document.getElementById('outPoem').innerText = data.poem;
                 document.getElementById('outTrans').innerText = data.trans;
                 poemBox.classList.remove('hidden');
 
-                // 3. 渲染右侧图片
-                const finalPrompt = encodeURIComponent(`(full body shot), cyberpunk style, highly detailed, ${data.imgP}`);
+                // 修改点：width=720&height=720 使图片变短为正方形
+                const finalPrompt = encodeURIComponent(`cyberpunk digital human, ${data.imgP}`);
                 const seed = Math.floor(Math.random() * 99999);
-                const imgUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=720&height=1440&nologo=true&seed=${seed}`;
+                const imgUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=720&height=720&nologo=true&seed=${seed}`;
                 
                 const imgNode = document.getElementById('outImg');
                 imgNode.src = imgUrl;
@@ -98,8 +117,9 @@
                 };
 
             } catch (e) {
-                alert("链接中断，请重试");
+                alert("合成中断");
                 loader.classList.add('hidden');
+                placeholder.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
                 btn.innerText = "开始合成";
