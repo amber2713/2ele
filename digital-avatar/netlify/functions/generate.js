@@ -40,7 +40,7 @@ exports.handler = async function (event) {
                         {
                           "poem": "一首中文七言绝句，只能是中文诗句",
                           "poem_en": "上面这首中文诗的英文翻译，不允许再写诗",
-                          "prompt": "用于生成赛博风格全身数字人的英文绘画prompt"
+                          "prompt": "用于生成赛博风格全身数字人的英文绘画prompt,注意生成的人物形象需要时满足输入关键词的个人全身像"
                         }
                         
                         关键词：${keywords}
