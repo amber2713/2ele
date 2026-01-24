@@ -57,8 +57,13 @@ input{
 }
 
 button{
-    padding:12px 30px;
-    font-size:18px;
+    padding:14px 40px;
+    font-size:20px;
+    border-radius:14px;
+    border:none;
+    background:#f5deb3;
+    cursor:pointer;
+    margin-top:24px;   /* 新增：下移按钮 */
 }
 
 #img{
