@@ -88,7 +88,9 @@ JSON输出 poem, poem_en, prompt`
                     message: {
                         text: [{
                             role: "user",
-                            content: result.prompt
+                            content: typeof result.prompt === "string"
+                                ? result.prompt
+                                : JSON.stringify(result.prompt)
                         }]
                     }
                 }
