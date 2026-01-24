@@ -75,7 +75,7 @@ JSON输出 poem, poem_en, prompt`
                 header: {
                             app_id: process.env.IMAGE_APP_ID,
                             uid: "123",
-                            patch_id: "0"
+                            patch_id: []
                         },
                 parameter: {
                     chat: {
