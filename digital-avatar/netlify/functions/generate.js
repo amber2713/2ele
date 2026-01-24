@@ -73,9 +73,10 @@ JSON输出 poem, poem_en, prompt`
             },
             body: JSON.stringify({
                 header: {
-                    app_id: process.env.IMAGE_APP_ID,
-                    uid: "123"
-                },
+                            app_id: process.env.IMAGE_APP_ID,
+                            uid: "123",
+                            patch_id: "0"
+                        },
                 parameter: {
                     chat: {
                         domain: process.env.IMAGE_MODEL_ID,
