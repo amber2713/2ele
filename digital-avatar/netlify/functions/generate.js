@@ -32,15 +32,15 @@ exports.handler = async function (event) {
                 messages: [{
                     role: "user",
                     content: `
-你必须严格按下面JSON格式输出：
-
-{
-  "poem": "中文七言绝句",
-  "poem_en": "上面中文诗的英文翻译",
-  "prompt": "赛博风格全身数字人英文绘画prompt"
-}
-
-关键词：${keywords}
+                        你必须严格按下面JSON格式输出：
+                        
+                        {
+                          "poem": "严格输出【中文】七言律诗",
+                          "poem_en": "上面中文诗的英文翻译",
+                          "prompt": "赛博风格全身数字人英文绘画prompt"
+                        }
+                        
+                        关键词：${keywords}
 `
                 }],
                 response_format: { type: "json_object" }
