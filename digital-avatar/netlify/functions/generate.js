@@ -20,7 +20,7 @@ exports.handler = async function (event) {
         const { k1, k2, k3 } = JSON.parse(event.body);
         const keywords = `${k1} ${k2} ${k3}`;
 
-        // ===== 第一步：Qwen3（Bearer，干净请求头）=====
+          // ===== Qwen3（绝对干净的 Bearer 请求）=====
         const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2", {
             method: "POST",
             headers: {
@@ -36,12 +36,9 @@ exports.handler = async function (event) {
                 response_format: { type: "json_object" }
             })
         });
-
+        
         const qwenData = await qwenRes.json();
-        console.log("QWEN RAW:", JSON.stringify(qwenData));
-
-        const content = qwenData.payload.choices.text[0].content;
-        const result = JSON.parse(content);
+        console.log("QWEN RAW:", qwenData);
         // ===== 第二步：Image（HMAC）=====
         const host = "maas-api.cn-huabei-1.xf-yun.com";
         const path = "/v2.1/tti";
