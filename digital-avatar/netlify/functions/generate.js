@@ -34,12 +34,22 @@ exports.handler = async function (event) {
                 model: process.env.QWEN_MODEL_ID,
                 messages: [{
                     role: "user",
-                    content:
-                        `用关键词 ${keywords}：
-                        1. 写一首七言绝句，并且一定要用用中文输出
-                        2. 给出英文的良好、通顺的翻译
-                        3. 将关键词润色为赛博风格全身数字人英文prompt
-                        JSON输出 poem, poem_en, prompt`
+                    content: `
+                        你必须严格按下面JSON格式输出：
+                        
+                        {
+                          "poem": "一首中文七言绝句，只能是中文诗句",
+                          "poem_en": "上面这首中文诗的英文翻译，不允许再写诗",
+                          "prompt": "用于生成赛博风格全身数字人的英文绘画prompt"
+                        }
+                        
+                        关键词：${keywords}
+                        
+                        要求：
+                        - poem 必须是中文七言绝句
+                        - poem_en 必须是对 poem 的英文翻译
+                        - 不能输出除JSON外的任何内容
+                        `
                 }],
                 response_format: { type: "json_object" }
             })
