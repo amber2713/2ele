@@ -38,7 +38,8 @@ exports.handler = async function (event) {
         });
 
         const qwenData = await qwenRes.json();
-        const result = JSON.parse(qwenData.choices[0].message.content);
+        const content = qwenData.payload.choices.text[0].content;
+        const result = JSON.parse(content);
 
         // ===== 第二步：Image（HMAC）=====
         const host = "maas-api.cn-huabei-1.xf-yun.com";
