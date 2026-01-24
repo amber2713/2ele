@@ -32,19 +32,21 @@ body {
 .explore:hover{
     transform: scale(1.25);
 }
+
 .container{
     display:flex;
     height:80vh;
     padding:40px 60px;
-    margin-top:140px;   /* 关键：整体下移 */
+    margin-top:140px; 
 }
 
 .left{
-    width:40%;
+    width:45%; /* 稍微加宽一点 */
+    overflow-y: auto; /* 如果诗太长可以滚动 */
 }
 
 .right{
-    width:60%;
+    width:55%;
     text-align:center;
     position:relative;
 }
@@ -54,6 +56,9 @@ input{
     padding:15px;
     margin:10px 0;
     font-size:18px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #f5deb3;
+    color: #fff;
 }
 
 button{
@@ -63,11 +68,14 @@ button{
     border:none;
     background:#f5deb3;
     cursor:pointer;
-    margin-top:24px;   /* 新增：下移按钮 */
+    margin-top:24px;
+    color: #1a1a1a;
+    font-weight: bold;
 }
 
 #img{
     max-height:80vh;
+    max-width: 100%;
 }
 
 .loader{
@@ -82,17 +90,35 @@ button{
     left:45%;
 }
 
-.poem{
-    white-space: pre-line;
-    font-size:24px;   /* 原来18 */
-    line-height:2;    /* 更有呼吸感 */
+/* --- 新增：中英文对齐布局 --- */
+.poem-container {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.poem-title{
-    margin-top:16px;
-    font-size:22px;
-    opacity:0.85;
+.poem-row {
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.6;
 }
+
+.zh-line {
+    width: 40%;
+    font-size: 22px;
+    font-weight: bold;
+    color: #f5deb3;
+    padding-right: 15px;
+}
+
+.en-line {
+    width: 60%;
+    font-size: 18px;
+    color: #d2b48c;
+    font-style: italic;
+}
+/* ------------------------- */
 
 .hidden{ display:none; }
 
