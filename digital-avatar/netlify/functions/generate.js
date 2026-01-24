@@ -36,8 +36,8 @@ exports.handler = async function (event) {
                     role: "user",
                     content:
                         `用关键词 ${keywords}：
-                        1. 写一首七言绝句，并且用中文输出
-                        2. 给出英文翻译
+                        1. 写一首七言绝句，并且一定要用用中文输出
+                        2. 给出英文的良好、通顺的翻译
                         3. 将关键词润色为赛博风格全身数字人英文prompt
                         JSON输出 poem, poem_en, prompt`
                 }],
