@@ -4,12 +4,13 @@ const fetch = require("node-fetch");
 function buildAuth(apiKey, apiSecret, host, path) {
     const date = new Date().toUTCString();
     const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST ${path} HTTP/1.1`;
-    const signatureSha = crypto
+
+    const signature = crypto
         .createHmac("sha256", apiSecret)
         .update(signatureOrigin)
         .digest("base64");
 
-    const authorization = `api_key="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signatureSha}"`;
+    const authorization = `api_key="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
 
     return { authorization, date };
 }
@@ -19,20 +20,22 @@ exports.handler = async function (event) {
         const { k1, k2, k3 } = JSON.parse(event.body);
         const keywords = `${k1} ${k2} ${k3}`;
 
-        const API_KEY = process.env.QWEN_API_KEY;
-        const API_SECRET = process.env.IMAGE_API_SECRET;
+        const host = "maas-api.cn-huabei-1.xf-yun.com";
 
-        // ======== 推理接口签名 ========
-        const host1 = "maas-api.cn-huabei-1.xf-yun.com";
+        // ===== 推理接口 =====
         const path1 = "/v2";
-        const auth1 = buildAuth(API_KEY, API_SECRET, host1, path1);
+        const auth1 = buildAuth(
+            process.env.QWEN_API_KEY,
+            process.env.IMAGE_API_SECRET,
+            host,
+            path1
+        );
 
-        // ======== 调 Qwen3 ========
-        const qwenRes = await fetch(`https://${host1}${path1}`, {
+        const qwenRes = await fetch(`https://${host}${path1}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Host: host1,
+                Host: host,
                 Date: auth1.date,
                 Authorization: auth1.authorization,
             },
@@ -51,15 +54,20 @@ exports.handler = async function (event) {
         const qwenData = await qwenRes.json();
         const result = JSON.parse(qwenData.choices[0].message.content);
 
-        // ======== 文生图签名 ========
+        // ===== 文生图接口 =====
         const path2 = "/v2.1/tti";
-        const auth2 = buildAuth(API_KEY, API_SECRET, host1, path2);
+        const auth2 = buildAuth(
+            process.env.QWEN_API_KEY,
+            process.env.IMAGE_API_SECRET,
+            host,
+            path2
+        );
 
-        const imgRes = await fetch(`https://${host1}${path2}`, {
+        const imgRes = await fetch(`https://${host}${path2}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Host: host1,
+                Host: host,
                 Date: auth2.date,
                 Authorization: auth2.authorization,
             },
@@ -88,14 +96,13 @@ exports.handler = async function (event) {
         });
 
         const imgData = await imgRes.json();
-        const base64 = imgData.payload.choices.text[0].content;
 
         return {
             statusCode: 200,
             body: JSON.stringify({
                 poem: result.poem,
                 poem_en: result.poem_en,
-                image: base64,
+                image: imgData.payload.choices.text[0].content,
             }),
         };
     } catch (err) {
