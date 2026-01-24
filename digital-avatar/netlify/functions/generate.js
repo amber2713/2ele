@@ -36,7 +36,7 @@ exports.handler = async function (event) {
                         
                         {
                           "poem": "严格输出【中文】七言律诗",
-                          "poem_en": "上面中文诗的英文翻译",
+                          "poem_en": "前面中文诗的【英文】翻译诗",
                           "prompt": "赛博风格全身数字人英文绘画prompt"
                         }
                         
