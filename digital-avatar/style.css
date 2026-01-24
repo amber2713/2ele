@@ -67,6 +67,11 @@ button{
     left:45%;
 }
 
+.poem{
+    white-space: pre-line;
+    line-height: 1.8;
+}
+
 .hidden{ display:none; }
 
 @keyframes spin{
