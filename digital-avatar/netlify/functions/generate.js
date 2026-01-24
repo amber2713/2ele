@@ -1,7 +1,6 @@
 const crypto = require("crypto");
 const fetch = require("node-fetch");
 
-// ===== Image 用的 HMAC =====
 function buildAuth(apiKey, apiSecret, host, path) {
     const date = new Date().toUTCString();
     const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST ${path} HTTP/1.1`;
@@ -21,9 +20,7 @@ exports.handler = async function (event) {
         const { k1, k2, k3 } = JSON.parse(event.body);
         const keywords = `${k1} ${k2} ${k3}`;
 
-        // =========================
-        // Qwen3 —— 正确的 /v1 OpenAI 通道
-        // =========================
+        // ===== Qwen3 =====
         const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -33,43 +30,27 @@ exports.handler = async function (event) {
             body: JSON.stringify({
                 model: process.env.QWEN_MODEL_ID,
                 messages: [{
-                          role: "user",
-                          content: `
-                        你需要按步骤完成任务：
-                        
-                        步骤1：
-                        先根据关键词写一首【中文七言绝句】。
-                        
-                        步骤2：
-                        把这首中文诗翻译成自然流畅的英文，不要再创作，只做翻译。
-                        
-                        步骤3：
-                        把关键词润色成一个【赛博风格、全身数字人、英文绘画prompt】。
-                        
-                        最后，严格按下面JSON格式输出，不要添加任何解释：
-                        
-                        {
-                          "poem": "步骤1写的中文七言绝句",
-                          "poem_en": "步骤2的英文翻译",
-                          "prompt": "步骤3的英文prompt"
-                        }
-                        
-                        关键词：${keywords}
-                        `
-                        }],
-response_format: { type: "json_object" }
+                    role: "user",
+                    content: `
+你必须严格按下面JSON格式输出：
+
+{
+  "poem": "中文七言绝句",
+  "poem_en": "上面中文诗的英文翻译",
+  "prompt": "赛博风格全身数字人英文绘画prompt"
+}
+
+关键词：${keywords}
+`
+                }],
                 response_format: { type: "json_object" }
             })
         });
 
         const qwenData = await qwenRes.json();
-        console.log("QWEN RAW:", JSON.stringify(qwenData));
-
         const result = JSON.parse(qwenData.choices[0].message.content);
 
-        // =========================
-        // Image —— HMAC
-        // =========================
+        // ===== Image =====
         const host = "maas-api.cn-huabei-1.xf-yun.com";
         const path = "/v2.1/tti";
 
@@ -90,10 +71,10 @@ response_format: { type: "json_object" }
             },
             body: JSON.stringify({
                 header: {
-                            app_id: process.env.IMAGE_APP_ID,
-                            uid: "123",
-                            patch_id: []
-                        },
+                    app_id: process.env.IMAGE_APP_ID,
+                    uid: "123",
+                    patch_id: []
+                },
                 parameter: {
                     chat: {
                         domain: process.env.IMAGE_MODEL_ID,
@@ -115,7 +96,13 @@ response_format: { type: "json_object" }
         });
 
         const imgData = await imgRes.json();
-        console.log("IMAGE RAW:", JSON.stringify(imgData));
+
+        if (!imgData.payload || !imgData.payload.choices) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "Image generation failed", raw: imgData })
+            };
+        }
 
         const base64 = imgData.payload.choices.text[0].content;
 
@@ -129,10 +116,9 @@ response_format: { type: "json_object" }
         };
 
     } catch (err) {
-        console.log("FINAL ERROR:", err);
         return {
             statusCode: 500,
-            body: err.toString()
+            body: JSON.stringify({ error: err.toString() })
         };
     }
 };
