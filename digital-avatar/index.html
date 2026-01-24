@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Create Your Digital Avatar</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="top-bar">
+    <h1>Create Your Digital Avatar</h1>
+    <div class="explore" onclick="goExplore()">explore</div>
+</div>
+
+<div class="container">
+    <div class="left">
+        <input id="k1" placeholder="keyword 1"/>
+        <input id="k2" placeholder="keyword 2"/>
+        <input id="k3" placeholder="keyword 3"/>
+        <button onclick="generate()">Create</button>
+    </div>
+
+    <div class="right">
+        <img id="img"/>
+        <pre id="poem"></pre>
+        <pre id="poem_en"></pre>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
