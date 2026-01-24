@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Character Creator</title>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ff;
+            --dark-bg: #0a0a0c;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-cyan);
+            font-family: 'Segoe UI', 'Courier New', monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header & Explore Icon */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--neon-pink);
+            position: relative;
+        }
+
+        .explore-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: 0.3s;
+            text-decoration: none;
+            color: var(--neon-cyan);
+        }
+
+        .explore-btn:hover {
+            text-shadow: 0 0 10px var(--neon-pink);
+            transform: scale(1.1);
+        }
+
+        /* Main Layout */
+        main {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .right-panel {
+            flex: 1.5;
+            border: 1px solid var(--neon-pink);
+            background: rgba(255, 0, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Inputs & Buttons */
+        input {
+            background: #1a1a1d;
+            border: 1px solid var(--neon-cyan);
+            color: white;
+            padding: 12px;
+            outline: none;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+            padding: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: var(--neon-pink);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        /* Output Content */
+        #output-img {
+            max-width: 100%;
+            border: 1px solid var(--neon-cyan);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .poem-container {
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .zh-poem { color: #fff; font-size: 1.1em; }
+        .en-poem { color: var(--neon-cyan); font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CREATE YOUR DIGITAL CHARACTER</h1>
+        <a href="https://gemini.google.com/app" target="_self" class="explore-btn">🧭</a>
+    </header>
+
+    <main>
+        <div class="left-panel">
+            <input type="text" id="p1" placeholder="Core Attribute (e.g. Cyborg)">
+            <input type="text" id="p2" placeholder="Environment (e.g. Rain Street)">
+            <input type="text" id="p3" placeholder="Action (e.g. Holding Katana)">
+            <button onclick="generate()">Initialize Generation</button>
+        </div>
+
+        <div class="right-panel" id="display-area">
+            <div id="loading" style="display:none;">CONNECTING TO NEURAL NETWORK...</div>
+            <img id="output-img" src="" alt="Cyber Character">
+            <div class="poem-container">
+                <p id="out-en" class="en-poem"></p>
+                <p id="out-zh" class="zh-poem"></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function generate() {
+            const btn = document.querySelector('button');
+            const loading = document.getElementById('loading');
+            const img = document.getElementById('output-img');
+            
+            const prompts = [
+                document.getElementById('p1').value,
+                document.getElementById('p2').value,
+                document.getElementById('p3').value
+            ];
+
+            loading.style.display = 'block';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/.netlify/functions/generate', {
+                    method: 'POST',
+                    body: JSON.stringify({ prompts })
+                });
+                const data = await response.json();
+
+                img.src = data.imageUrl;
+                img.style.display = 'block';
+                document.getElementById('out-en').innerText = data.poemEn;
+                document.getElementById('out-zh').innerText = data.poemZh;
+            } catch (err) {
+                alert("Neural link failed. Check Console.");
+            } finally {
+                loading.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
