@@ -1,75 +1,107 @@
-exports.handler = async function(event) {
+const crypto = require("crypto");
+const fetch = require("node-fetch");
 
-const {k1,k2,k3} = JSON.parse(event.body);
-const keywords = `${k1} ${k2} ${k3}`;
+function buildAuth(apiKey, apiSecret, host, path) {
+    const date = new Date().toUTCString();
+    const signatureOrigin = `host: ${host}\ndate: ${date}\nPOST ${path} HTTP/1.1`;
+    const signatureSha = crypto
+        .createHmac("sha256", apiSecret)
+        .update(signatureOrigin)
+        .digest("base64");
 
-// 从环境变量读取
-const QWEN_API_KEY = process.env.QWEN_API_KEY;
-const QWEN_MODEL_ID = process.env.QWEN_MODEL_ID;
-const IMAGE_MODEL_ID = process.env.IMAGE_MODEL_ID;
-const IMAGE_APP_ID = process.env.IMAGE_APP_ID;
+    const authorization = `api_key="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signatureSha}"`;
 
-// ====== 第一步：Qwen3 推理 ======
+    return { authorization, date };
+}
 
-const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2",{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/json",
-        "Authorization":`Bearer ${QWEN_API_KEY}`
-    },
-    body:JSON.stringify({
-        model:QWEN_MODEL_ID,
-        messages:[{
-            role:"user",
-            content:`用关键词 ${keywords} 写一首七言绝句，并翻译成英文。再将这三个词润色为适合生成赛博风格全身数字人的英文prompt。按JSON输出：poem, poem_en, prompt`
-        }],
-        response_format:{type:"json_object"}
-    })
-});
+exports.handler = async function (event) {
+    try {
+        const { k1, k2, k3 } = JSON.parse(event.body);
+        const keywords = `${k1} ${k2} ${k3}`;
 
-const qwenData = await qwenRes.json();
-const result = JSON.parse(qwenData.choices[0].message.content);
+        const API_KEY = process.env.QWEN_API_KEY;
+        const API_SECRET = process.env.IMAGE_API_SECRET;
 
-// ====== 第二步：文生图 ======
+        // ======== 推理接口签名 ========
+        const host1 = "maas-api.cn-huabei-1.xf-yun.com";
+        const path1 = "/v2";
+        const auth1 = buildAuth(API_KEY, API_SECRET, host1, path1);
 
-const imgRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2.1/tti",{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-        header:{
-            app_id:IMAGE_APP_ID,
-            uid:"123"
-        },
-        parameter:{
-            chat:{
-                domain:IMAGE_MODEL_ID,
-                width:768,
-                height:1024,
-                seed:42,
-                num_inference_steps:20,
-                guidance_scale:6,
-                scheduler:"Euler"
-            }
-        },
-        payload:{
-            message:{
-                text:[{role:"user",content:result.prompt}]
-            }
-        }
-    })
-});
+        // ======== 调 Qwen3 ========
+        const qwenRes = await fetch(`https://${host1}${path1}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Host: host1,
+                Date: auth1.date,
+                Authorization: auth1.authorization,
+            },
+            body: JSON.stringify({
+                model: process.env.QWEN_MODEL_ID,
+                messages: [
+                    {
+                        role: "user",
+                        content: `用关键词 ${keywords} 写七言绝句、英文翻译，并润色成赛博风格全身数字人prompt。JSON输出 poem, poem_en, prompt`,
+                    },
+                ],
+                response_format: { type: "json_object" },
+            }),
+        });
 
-const imgData = await imgRes.json();
-const base64 = imgData.payload.choices.text[0].content;
+        const qwenData = await qwenRes.json();
+        const result = JSON.parse(qwenData.choices[0].message.content);
 
-return {
-    statusCode:200,
-    body:JSON.stringify({
-        poem:result.poem,
-        poem_en:result.poem_en,
-        image:base64
-    })
-};
+        // ======== 文生图签名 ========
+        const path2 = "/v2.1/tti";
+        const auth2 = buildAuth(API_KEY, API_SECRET, host1, path2);
+
+        const imgRes = await fetch(`https://${host1}${path2}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Host: host1,
+                Date: auth2.date,
+                Authorization: auth2.authorization,
+            },
+            body: JSON.stringify({
+                header: {
+                    app_id: process.env.IMAGE_APP_ID,
+                    uid: "123",
+                },
+                parameter: {
+                    chat: {
+                        domain: process.env.IMAGE_MODEL_ID,
+                        width: 768,
+                        height: 1024,
+                        seed: 42,
+                        num_inference_steps: 20,
+                        guidance_scale: 6,
+                        scheduler: "Euler",
+                    },
+                },
+                payload: {
+                    message: {
+                        text: [{ role: "user", content: result.prompt }],
+                    },
+                },
+            }),
+        });
+
+        const imgData = await imgRes.json();
+        const base64 = imgData.payload.choices.text[0].content;
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                poem: result.poem,
+                poem_en: result.poem_en,
+                image: base64,
+            }),
+        };
+    } catch (err) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: err.toString() }),
+        };
+    }
 };
