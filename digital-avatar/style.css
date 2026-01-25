@@ -1,6 +1,6 @@
 body {
     margin:0;
-    font-family: Cambria, serif;
+    font-family: 'Cambria', 'Georgia', serif;
     background: #1a1a1a;
     color: #f5deb3;
     overflow:hidden;
@@ -11,6 +11,57 @@ body {
     z-index:-1;
 }
 
+/* 开场动画层 */
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000; /* 纯黑背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 1.5s ease;
+}
+
+#intro-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(245, 222, 179, 0.8); /* 文字发光 */
+    text-align: center;
+    max-width: 70%;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+#skip-btn {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    color: #555;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border: 1px solid #333;
+    padding: 5px 15px;
+    transition: all 0.3s;
+}
+
+#skip-btn:hover {
+    color: #f5deb3;
+    border-color: #f5deb3;
+}
+
+.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 主内容布局 */
 .title-center{
     position:absolute;
     top:30px;
@@ -29,36 +80,26 @@ body {
     transition: transform 0.3s ease;
 }
 
-.explore:hover{
-    transform: scale(1.25);
-}
+.explore:hover{ transform: scale(1.25); }
 
 .container{
     display:flex;
     height:80vh;
     padding:40px 60px;
-    margin-top:140px; 
+    margin-top:140px;
 }
 
-.left{
-    width:45%; /* 稍微加宽一点 */
-    overflow-y: auto; /* 如果诗太长可以滚动 */
-}
-
-.right{
-    width:55%;
-    text-align:center;
-    position:relative;
-}
+.left{ width:45%; overflow-y: auto; }
+.right{ width:55%; text-align:center; position:relative; }
 
 input{
     width:80%;
     padding:15px;
     margin:10px 0;
     font-size:18px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid #f5deb3;
-    color: #fff;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #333;
+    color: #f5deb3;
 }
 
 button{
@@ -69,59 +110,27 @@ button{
     background:#f5deb3;
     cursor:pointer;
     margin-top:24px;
-    color: #1a1a1a;
     font-weight: bold;
 }
 
-#img{
-    max-height:80vh;
-    max-width: 100%;
-}
+#img{ max-height:80vh; max-width: 100%; border-radius: 8px; }
+
+/* 诗句对齐样式 */
+.poem-container { margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
+.poem-row { display: flex; align-items: flex-start; margin-bottom: 8px; }
+.zh-line { width: 45%; font-size: 20px; font-weight: bold; color: #f5deb3; padding-right: 20px; text-align: right; }
+.en-line { width: 55%; font-size: 16px; color: #aaa; font-style: italic; text-align: left; }
 
 .loader{
-    border:10px solid #333;
-    border-top:10px solid #f5deb3;
+    border:8px solid #333;
+    border-top:8px solid #f5deb3;
     border-radius:50%;
-    width:80px;
-    height:80px;
+    width:60px;
+    height:60px;
     animation:spin 1s linear infinite;
     position:absolute;
-    top:40%;
-    left:45%;
+    top:40%; left:45%;
 }
-
-/* --- 新增：中英文对齐布局 --- */
-.poem-container {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.poem-row {
-    display: flex;
-    align-items: flex-start;
-    line-height: 1.6;
-}
-
-.zh-line {
-    width: 40%;
-    font-size: 22px;
-    font-weight: bold;
-    color: #f5deb3;
-    padding-right: 15px;
-}
-
-.en-line {
-    width: 60%;
-    font-size: 18px;
-    color: #d2b48c;
-    font-style: italic;
-}
-/* ------------------------- */
 
 .hidden{ display:none; }
-
-@keyframes spin{
-    100%{ transform:rotate(360deg);}
-}
+@keyframes spin{ 100%{ transform:rotate(360deg);} }
