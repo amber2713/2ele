@@ -15,27 +15,36 @@
             overflow-x: hidden;
         }
         
-        /* Intro Overlay Styles */
+        /* Intro Overlay Styles - 强化居中逻辑 */
         #intro-overlay {
             position: fixed;
             inset: 0;
             background: #000;
             z-index: 100;
+            display: flex; /* 使用 Flexbox */
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+            padding: 2rem;
+        }
+
+        #intro-content {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            width: 100%;
+            height: 100%;
         }
 
         .intro-text {
             color: #fff;
             text-shadow: 0 0 15px rgba(139, 92, 246, 0.8), 0 0 30px rgba(139, 92, 246, 0.4);
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* 略微调大字号 */
             text-align: center;
-            max-width: 800px;
+            max-width: 900px;
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
-            position: absolute;
+            /* 取消之前的 absolute 定位，让 Flex 居中生效 */
+            position: relative; 
         }
 
         .intro-text.active { opacity: 1; }
@@ -44,7 +53,7 @@
         .cyber-bg {
             background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #020617 100%);
             min-height: 100vh;
-            display: none; /* Initially hidden */
+            display: none; 
         }
 
         .cyber-panel { 
@@ -82,7 +91,7 @@
     <div id="main-app" class="cyber-bg p-4 md:p-10 flex items-center justify-center">
         <div class="max-w-6xl w-full py-10">
             <header class="mb-8">
-                <h1 class="title-font text-3xl font-bold text-purple-400">BUILD YOUR DIGITAL CHARACTER</h1>
+                <h1 class="title-font text-3xl font-bold text-purple-400 tracking-tight">BUILD YOUR DIGITAL CHARACTER</h1>
                 <p class="text-slate-500 text-xs tracking-widest uppercase">QWEN 1.7B & POLLINATIONS HYBRID SYSTEM</p>
             </header>
 
@@ -131,7 +140,6 @@
     </div>
 
     <script>
-        // Intro Sentences
         const sentences = [
             "THE YEAR IS 3099...",
             "A HARSH TRUTH HAS EMERGED FROM THE DIGITAL DUST...",
@@ -160,17 +168,26 @@
                 return;
             }
 
-            introContent.innerHTML = `<div class="intro-text active">${sentences[currentSentence]}</div>`;
+            // 清空旧内容并插入新文字
+            introContent.innerHTML = `<div class="intro-text" id="text-node">${sentences[currentSentence]}</div>`;
             
-            // Time to read: 2.5 seconds + 0.5s fade
+            // 触发淡入
             setTimeout(() => {
-                const el = introContent.firstChild;
-                if(el) el.style.opacity = '0';
+                const node = document.getElementById('text-node');
+                if(node) node.classList.add('active');
+            }, 50);
+
+            // 保持显示 2.8 秒后淡出
+            setTimeout(() => {
+                const node = document.getElementById('text-node');
+                if(node) node.classList.remove('active');
+                
+                // 等待淡出动画完成后切换下一句
                 setTimeout(() => {
                     currentSentence++;
                     showSentence();
                 }, 800);
-            }, 2500);
+            }, 2800);
         }
 
         function endIntro() {
@@ -183,10 +200,9 @@
             }, 1500);
         }
 
-        // Start Intro on Load
         window.onload = showSentence;
 
-        // Image Generation Logic
+        // API 逻辑保持不变
         async function generate() {
             const kws = [
                 document.getElementById('kw1').value, 
@@ -218,7 +234,7 @@
                 document.getElementById('outTrans').innerText = data.trans;
                 poemBox.classList.remove('hidden');
 
-                const finalPrompt = encodeURIComponent(`cyberpunk style, ${data.imgP}`);
+                const finalPrompt = encodeURIComponent(`cyberpunk digital human, ${data.imgP}`);
                 const seed = Math.floor(Math.random() * 99999);
                 const imgUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=720&height=720&nologo=true&seed=${seed}`;
                 
