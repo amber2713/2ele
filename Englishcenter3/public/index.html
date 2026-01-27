@@ -184,39 +184,70 @@
 
     window.onload = playIntro;
 
-    /* ================= 2. 聊天逻辑 ================= */
-    const chatHistory = [];
-    async function handleChat() {
-        const input = document.getElementById('userInput');
-        const display = document.getElementById('chatDisplay');
-        const text = input.value.trim();
-        if (!text) return;
+   /* ================= 2. 聊天逻辑 ================= */
+const chatHistory = [];
+let isTyping = false; // 状态锁，防止打字未结束时再次触发
 
-        chatHistory.push({ role: "user", content: text });
-        display.innerHTML = `<div style="color:#3B82F6"><b>You:</b> ${text}</div>`;
-        input.value = '';
+async function handleChat() {
+    const input = document.getElementById('userInput');
+    const display = document.getElementById('chatDisplay');
+    const text = input.value.trim();
 
-        const loadingDiv = document.createElement('div');
-        loadingDiv.innerText = "The librarian is searching the archives...";
-        display.appendChild(loadingDiv);
+    // 如果正在打字或输入为空，则返回
+    if (!text || isTyping) return;
 
-        try {
-            const response = await fetch('/.netlify/functions/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: chatHistory })
-            });
-            const data = await response.json();
-            chatHistory.push({ role: "assistant", content: data.content });
-            display.innerHTML = `<div>${data.content}</div>`;
-        } catch (e) {
-            display.innerHTML = "She smiles faintly. 'My memory is like a dusty shelf today. Ask me something else.'";
+    chatHistory.push({ role: "user", content: text });
+    display.innerHTML = `<div style="color:#3B82F6"><b>You:</b> ${text}</div>`;
+    input.value = '';
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerText = "The librarian is searching the archives...";
+    display.appendChild(loadingDiv);
+
+    try {
+        const response = await fetch('/.netlify/functions/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: chatHistory })
+        });
+        const data = await response.json();
+        const fullContent = data.content;
+        
+        chatHistory.push({ role: "assistant", content: fullContent });
+        
+        // 移除加载状态，开始打字效果
+        loadingDiv.remove();
+        typeWriter(display, fullContent);
+
+    } catch (e) {
+        display.innerHTML = "She smiles faintly. 'My memory is like a dusty shelf today. Ask me something else.'";
+    }
+}
+
+// --- 打字机效果函数 ---
+function typeWriter(element, text, speed = 30) {
+    isTyping = true;
+    let i = 0;
+    const typingDiv = document.createElement('div');
+    element.appendChild(typingDiv);
+
+    function type() {
+        if (i < text.length) {
+            typingDiv.innerHTML += text.charAt(i);
+            i++;
+            // 自动滚动到底部
+            element.scrollTop = element.scrollHeight;
+            setTimeout(type, speed);
+        } else {
+            isTyping = false; // 打字完成，解锁
         }
     }
+    type();
+}
 
-    document.getElementById('userInput').addEventListener('keypress', e => {
-        if(e.key === 'Enter') handleChat();
-    });
+document.getElementById('userInput').addEventListener('keypress', e => {
+    if(e.key === 'Enter') handleChat();
+});
 
     /* ================= 3. 作业/信件随机生成系统 (已集成文档内容) ================= */
 
