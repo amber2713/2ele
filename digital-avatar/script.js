@@ -1,77 +1,78 @@
-/* =========================================
-   背景图片时间轴
-========================================= */
+// ========================================
+// 背景图片
+// ========================================
 
 const backgrounds = [
-
-    // 1
-    {
-        img: "netlify/images/bg1.jpg",
-        time: 0
-    },
-
-    // 2
-    {
-        img: "netlify/images/bg2.jpg",
-        time: 14000
-    },
-
-    // 3
-    {
-        img: "netlify/images/bg3.jpg",
-        time: 30000
-    },
-
-    // 4
-    {
-        img: "netlify/images/bg4.jpg",
-        time: 43000
-    },
-
-    // 5
-    {
-        img: "netlify/images/bg5.jpg",
-        time: 56000
-    },
-
-    // 6
-    {
-        img: "netlify/images/bg6.jpg",
-        time: 72000
-    }
+    "netlify/images/bg1.jpg",
+    "netlify/images/bg2.jpg",
+    "netlify/images/bg3.jpg",
+    "netlify/images/bg4.jpg",
+    "netlify/images/bg5.jpg",
+    "netlify/images/bg6.jpg"
 ];
 
-/* =========================================
-   开场文字
-========================================= */
+const backgroundLayer = document.getElementById("background-layer");
 
-const introText = `
+let currentBg = 0;
 
+function switchBackground() {
+    backgroundLayer.style.backgroundImage =
+        `url('${backgrounds[currentBg]}')`;
+
+    backgroundLayer.classList.remove("zoom-effect");
+
+    void backgroundLayer.offsetWidth;
+
+    backgroundLayer.classList.add("zoom-effect");
+
+    currentBg++;
+
+    if (currentBg >= backgrounds.length) {
+        currentBg = backgrounds.length - 1;
+    }
+}
+
+switchBackground();
+
+setTimeout(() => switchBackground(), 7000);
+setTimeout(() => switchBackground(), 14000);
+setTimeout(() => switchBackground(), 21000);
+setTimeout(() => switchBackground(), 28000);
+setTimeout(() => switchBackground(), 36000);
+
+// ========================================
+// 故事文本
+// ========================================
+
+const story = `
 Rust.
 
 That was the first word
-I received after rebooting.
+I received
+after rebooting.
 
 ...
 
-Mechanical joints slowly rotated.
+My mechanical joints
+began to move slowly.
 
 Cold electric currents
 flowed once again
-through the silent core.
+through the sleeping core.
 
 I awakened
 within the ruins.
 
-The sky was dark red.
+The sky
+was dark crimson.
 
 Collapsed skyscrapers
 lay across the earth
-like the corpses of ancient beasts.
+like dead giants.
 
 Wind passed through
-the remains of steel,
-creating a low mechanical lament.
+twisted steel skeletons,
+producing a low metallic howl.
 
 There were
 no life signals.
@@ -80,43 +81,51 @@ No humans.
 
 Only the silence
 left behind
-after the death of civilization.
+after civilization died.
 
 ...
 
-My memory database
-was severely corrupted.
+My memory archive
+was severely damaged.
 
 Most system logs
-had vanished.
+were corrupted.
 
 I did not know
 who I was.
 
-Nor did I understand
-why I still existed.
+Nor why
+I still existed.
 
-So I began to walk.
+So I began walking.
 
-Broken streets
-extended endlessly
-beneath my feet.
+Beneath my feet
+were shattered streets.
+
+Rust-covered signs
+could no longer
+be identified.
+
+The entire world
+felt abandoned by time itself.
 
 Then—
 
-deep within the ruins—
+deep within the ruins,
 
 I detected
 a faint reflection.
 
-It was a mirror.
+A mirror.
 
-Half-buried
-within a collapsed wall.
+Or rather—
+
+half of a broken mirror
+embedded in a ruined wall.
 
 I slowly approached.
 
-The figure inside the mirror
+The figure in the mirror
 approached as well.
 
 ...
@@ -124,16 +133,15 @@ approached as well.
 It was not human.
 
 A silver-gray mechanical frame
-was exposed beneath
+exposed beneath
 damaged armor plating.
 
-A fracture
-crossed the center
-of the chest armor.
+At the center of my chest,
+a fracture
+cut through the metal shell.
 
-Blue electric currents
-flickered weakly
-inside the crack.
+Weak blue currents
+flickered slowly within.
 
 And there—
 
@@ -141,7 +149,7 @@ I saw a symbol.
 
 USTC.
 
-The edges of the letters
+Its edges
 were intertwined
 with delicate circuit patterns.
 
@@ -149,452 +157,196 @@ Even after countless years,
 it still emitted
 a faint cold glow.
 
-My core
-suddenly destabilized.
+Suddenly—
 
-[ SEARCHING KEYWORD : USTC ]
+my core reacted abnormally.
+
+[SEARCHING KEYWORD: USTC]
 
 ...
 
-Fragments of memory
-surged back like waves.
+The database
+began operating slowly.
 
-Tree-lined paths.
+Fragments of information
+flooded back
+like tides.
+
+Tree-lined roads.
 
 Laboratories.
 
-The sound
-of turning pages.
+The sound of pages turning.
 
-White lights
-inside silent research rooms.
-
-Someone speaking softly.
+Under pale white lights,
+someone whispered softly.
 
 "If one day..."
 
 "civilization disappears..."
 
-"something
-will remember us."
+"at least
+something will still remember us."
 
 ...
 
-[ SEARCH RESULT FOUND ]
+The images collapsed.
 
-University of Science
-and Technology of China
+Static noise returned.
 
-[ LOCATION : HEFEI, ANHUI ]
+[SEARCH RESULT:
+University of Science and Technology of China]
 
-[ CREATOR ACCESS :
-TOP LEVEL AUTHORIZATION ]
+[LOCATION:
+Hefei, Anhui]
 
-[ CREATOR RECORD :
-STUDIED AT USTC ]
+[ACCESS LEVEL:
+Highest Creation Protocol]
+
+[IDENTITY MATCH:
+Creator once studied here]
 
 ...
 
 Creator.
 
-This was the first time
-I had retrieved
+That was the first time
+I had ever retrieved
 that word.
 
-But beyond these fragments—
+But beyond that—
 
-nothing remained.
-
-I did not know
-who created me.
+I could remember nothing else.
 
 I did not know
-what humans looked like.
+who he was.
 
-I did not know
-why civilization collapsed.
+What he looked like.
 
-And I did not know—
+Why humanity vanished.
 
-why I had been created.
+Or even—
+
+why he created me.
 
 ...
 
-Yet when I lowered my head
-once more—
+Yet when I lowered my gaze
+once more
+toward the USTC emblem
+on my chest—
 
-and looked at
-the USTC symbol
-embedded in my chest—
-
-something deep inside
-the core reacted.
+something stirred
+deep within my core.
 
 A feeling
 I could not explain.
 
-Like a distant signal.
+Like a distant calling.
 
-Like a call
-from the end of the world.
-
-As though somewhere—
+As though
+somewhere
+at the end of the world—
 
 something
 was still waiting
-for me to return.
-
+for me
+to return.
 `;
 
-/* =========================================
-   DOM
-========================================= */
+const lines = story
+    .split("\n")
+    .map(line => line.trim());
 
-const bgLayer =
-    document.getElementById(
-        "background-layer"
-    );
+// ========================================
+// 创建滚动文字
+// ========================================
 
-const textElement =
-    document.getElementById(
-        "intro-text"
-    );
+const textContainer = document.getElementById("scroll-text");
 
-/* =========================================
-   背景切换
-========================================= */
+lines.forEach(line => {
+    const div = document.createElement("div");
 
-function startBackgrounds(){
+    div.className = "story-line";
 
-    backgrounds.forEach(scene => {
+    if (line === "") {
+        div.classList.add("story-space");
+        div.innerHTML = "&nbsp;";
+    } else {
+        div.textContent = line;
+    }
 
-        setTimeout(() => {
+    textContainer.appendChild(div);
+});
 
-            bgLayer.style.backgroundImage =
-                `url(${scene.img})`;
+// ========================================
+// 文字滚动动画
+// ========================================
 
-            bgLayer.classList.remove(
-                "zoom-effect"
-            );
+let y = window.innerHeight;
 
-            void bgLayer.offsetWidth;
+const scrollSpeed = 0.55;
 
-            bgLayer.classList.add(
-                "zoom-effect"
-            );
+function animateText() {
+    y -= scrollSpeed;
 
-        }, scene.time);
+    textContainer.style.transform =
+        `translateY(${y}px)`;
 
-    });
+    requestAnimationFrame(animateText);
 }
 
-/* =========================================
-   打字机系统
-========================================= */
+animateText();
 
-let charIndex = 0;
+// ========================================
+// Skip按钮
+// ========================================
 
-function typeWriter(){
+function skipIntro() {
+    const overlay =
+        document.getElementById("intro-overlay");
 
-    if(charIndex >= introText.length){
-
-        document.getElementById(
-            "enter-btn"
-        ).style.opacity = 1;
-
-        return;
-    }
-
-    const currentChar =
-        introText.charAt(charIndex);
-
-    textElement.innerHTML += currentChar;
-
-    charIndex++;
-
-    let speed = 24;
-
-    // 标点停顿
-    if(
-        currentChar === "." ||
-        currentChar === "—"
-    ){
-        speed = 140;
-    }
-
-    // 换行停顿
-    if(currentChar === "\n"){
-        speed = 45;
-    }
-
-    setTimeout(
-        typeWriter,
-        speed
-    );
-}
-
-/* =========================================
-   故障扫描效果
-========================================= */
-
-function glitchFlash(){
-
-    const glitch =
-        document.getElementById(
-            "glitch-layer"
-        );
-
-    glitch.style.opacity =
-        Math.random() * 0.15;
+    overlay.classList.add("fade-out");
 
     setTimeout(() => {
-
-        glitch.style.opacity = 0;
-
-    }, 120);
+        overlay.style.display = "none";
+    }, 1500);
 }
 
-/* =========================================
-   跳过
-========================================= */
+document
+.getElementById("skip-btn")
+.addEventListener("click", skipIntro);
 
-function skipIntro(){
+// ========================================
+// 粒子背景
+// ========================================
 
-    document.getElementById(
-        "intro-overlay"
-    ).classList.add(
-        "fade-out"
-    );
-}
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
 
-/* =========================================
-   页面启动
-========================================= */
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-window.onload = () => {
+let dots = Array.from(
+    { length: 80 },
+    () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,
+        dx: Math.random() - 0.5,
+        dy: Math.random() - 0.5
+    })
+);
 
-    startBackgrounds();
-
-    typeWriter();
-
-    setInterval(
-        glitchFlash,
-        3500
-    );
-};
-
-/* =========================================
-   原有生成逻辑
-========================================= */
-
-async function generate(){
-
-    const loader =
-        document.getElementById(
-            "loader"
-        );
-
-    loader.classList.remove(
-        "hidden"
-    );
-
-    try{
-
-        const res = await fetch(
-            "/.netlify/functions/generate",
-            {
-                method:"POST",
-
-                body:JSON.stringify({
-
-                    k1:
-                    document.getElementById("k1").value,
-
-                    k2:
-                    document.getElementById("k2").value,
-
-                    k3:
-                    document.getElementById("k3").value
-                })
-            }
-        );
-
-        const data =
-            await res.json();
-
-        loader.classList.add(
-            "hidden"
-        );
-
-        if(!res.ok || !data.image){
-
-            alert(
-                "Digital Reconstruction Failed."
-            );
-
-            return;
-        }
-
-        document.getElementById(
-            "img"
-        ).src =
-            "data:image/png;base64," +
-            data.image;
-
-        renderAlignedPoem(
-            data.poem,
-            data.poem_en
-        );
-
-    }catch(e){
-
-        loader.classList.add(
-            "hidden"
-        );
-
-        console.error(e);
-    }
-}
-
-/* =========================================
-   诗句排版
-========================================= */
-
-function renderAlignedPoem(
-    zhRaw,
-    enRaw
-){
-
-    const container =
-        document.getElementById(
-            "poemDisplay"
-        );
-
-    container.innerHTML = "";
-
-    const splitText = (
-        text,
-        isEn
-    ) => {
-
-        let fmt =
-            isEn
-            ?
-            text
-            .replace(/, /g,",\n")
-            .replace(/\. /g,".\n")
-            :
-            text
-            .replace(/，/g,"，\n")
-            .replace(/。/g,"。\n");
-
-        return fmt
-            .split("\n")
-            .map(s => s.trim())
-            .filter(s => s !== "");
-    };
-
-    const zhLines =
-        splitText(zhRaw,false);
-
-    const enLines =
-        splitText(enRaw,true);
-
-    const length =
-        Math.max(
-            zhLines.length,
-            enLines.length
-        );
-
-    for(let i=0;i<length;i++){
-
-        const row =
-            document.createElement("div");
-
-        row.className =
-            "poem-row";
-
-        row.innerHTML = `
-            <div class="zh-line">
-                ${zhLines[i] || ""}
-            </div>
-
-            <div class="en-line">
-                ${enLines[i] || ""}
-            </div>
-        `;
-
-        container.appendChild(row);
-    }
-}
-
-/* =========================================
-   粒子背景
-========================================= */
-
-const canvas =
-    document.getElementById(
-        "bg"
-    );
-
-const ctx =
-    canvas.getContext("2d");
-
-canvas.width =
-    window.innerWidth;
-
-canvas.height =
-    window.innerHeight;
-
-let dots =
-    Array.from(
-        {length:80},
-        () => ({
-
-            x:
-            Math.random() * canvas.width,
-
-            y:
-            Math.random() * canvas.height,
-
-            r:
-            Math.random() * 2 + 1,
-
-            dx:
-            Math.random() - 0.5,
-
-            dy:
-            Math.random() - 0.5
-        })
-    );
-
-function animate(){
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     dots.forEach(d => {
-
         d.x += d.dx;
         d.y += d.dy;
 
-        if(
-            d.x < 0 ||
-            d.x > canvas.width
-        ){
-            d.dx *= -1;
-        }
-
-        if(
-            d.y < 0 ||
-            d.y > canvas.height
-        ){
-            d.dy *= -1;
-        }
+        if (d.x < 0 || d.x > canvas.width) d.dx *= -1;
+        if (d.y < 0 || d.y > canvas.height) d.dy *= -1;
 
         ctx.beginPath();
 
@@ -607,14 +359,12 @@ function animate(){
         );
 
         ctx.fillStyle =
-            "#f5deb3";
+            "rgba(245,222,179,0.7)";
 
         ctx.fill();
     });
 
-    requestAnimationFrame(
-        animate
-    );
+    requestAnimationFrame(animateParticles);
 }
 
-animate();
+animateParticles();
