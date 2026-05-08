@@ -2,42 +2,84 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Create Your Digital Avatar</title>
+    <title>Digital USTC</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- 开场动画 -->
 <div id="intro-overlay">
+
+    <div id="background-layer"></div>
+
+    <div id="glitch-layer"></div>
+
+    <div id="overlay-dark"></div>
+
     <div id="intro-text"></div>
-    <div id="skip-btn" onclick="skipIntro()">SKIP INTERFACE</div>
+
+    <div id="intro-sub"></div>
+
+    <div id="system-tip">
+        CLICK ANYWHERE TO SKIP
+    </div>
+
+    <button id="enter-btn" onclick="skipIntro()">
+        ENTER
+    </button>
+
 </div>
 
+<!-- 粒子背景 -->
 <canvas id="bg"></canvas>
 
+<!-- 顶栏 -->
 <div class="topbar">
-    <div class="explore" onclick="location.href='https://jovial-naiad-a3ecb6.netlify.app'">Explore</div>
+    <div class="explore"
+         onclick="location.href='https://jovial-naiad-a3ecb6.netlify.app'">
+        Explore
+    </div>
 </div>
 
+<!-- 标题 -->
 <div class="title-center">
-    Create Your Digital Avatar
+    Digital USTC
 </div>
 
+<!-- 主内容 -->
 <div class="container">
-    <div class="left">
-        <input id="k1" placeholder="Keyword 1">
-        <input id="k2" placeholder="Keyword 2">
-        <input id="k3" placeholder="Keyword 3">
-        <button onclick="generate()">Generate</button>
 
-        <div id="poemDisplay" class="poem-container"></div>
+    <div class="left">
+
+        <input id="k1" placeholder="Keyword 1">
+
+        <input id="k2" placeholder="Keyword 2">
+
+        <input id="k3" placeholder="Keyword 3">
+
+        <button onclick="generate()">
+            Generate
+        </button>
+
+        <div id="poemDisplay"
+             class="poem-container">
+        </div>
+
     </div>
 
     <div class="right">
-        <div id="loader" class="loader hidden"></div>
+
+        <div id="loader"
+             class="loader hidden">
+        </div>
+
         <img id="img"/>
+
     </div>
+
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
