@@ -1,5 +1,11 @@
+/* =========================================
+   全局
+========================================= */
+
 body{
+
     margin:0;
+
     overflow:hidden;
 
     background:#050505;
@@ -12,22 +18,27 @@ body{
         serif;
 }
 
-/* =======================================
+/* =========================================
    粒子背景
-======================================= */
+========================================= */
 
 #bg{
+
     position:fixed;
+
     inset:0;
-    z-index:-5;
+
+    z-index:-10;
 }
 
-/* =======================================
+/* =========================================
    开场系统
-======================================= */
+========================================= */
 
 #intro-overlay{
+
     position:fixed;
+
     inset:0;
 
     background:black;
@@ -37,49 +48,72 @@ body{
     overflow:hidden;
 }
 
-/* 背景图 */
+/* =========================================
+   背景图
+========================================= */
 
 #background-layer{
+
     position:absolute;
+
     inset:0;
 
     background-size:cover;
+
     background-position:center;
+
+    background-repeat:no-repeat;
 
     filter:
         brightness(0.38)
-        contrast(1.1);
+        contrast(1.08);
 
     transform:scale(1);
 
     transition:
-        background-image 1.5s ease,
+        background-image 2s ease,
         transform 8s linear;
+
+    z-index:1;
 }
 
 .zoom-effect{
+
     transform:scale(1.08);
 }
 
-/* 黑色渐变 */
+/* =========================================
+   黑色遮罩
+========================================= */
 
 #overlay-dark{
+
     position:absolute;
+
     inset:0;
 
     background:
         linear-gradient(
             to bottom,
-            rgba(0,0,0,0.72),
-            rgba(0,0,0,0.35),
-            rgba(0,0,0,0.82)
+
+            rgba(0,0,0,0.82),
+
+            rgba(0,0,0,0.32),
+
+            rgba(0,0,0,0.88)
         );
+
+    z-index:2;
 }
 
-/* 故障层 */
+/* =========================================
+   扫描线
+========================================= */
 
 #glitch-layer{
+
     position:absolute;
+
     inset:0;
 
     opacity:0;
@@ -88,70 +122,91 @@ body{
 
     background:
     repeating-linear-gradient(
+
         0deg,
+
         rgba(255,255,255,0.02),
+
         rgba(255,255,255,0.02) 2px,
+
         transparent 2px,
+
         transparent 4px
     );
+
+    mix-blend-mode:screen;
+
+    z-index:3;
 }
 
-/* 主标题 */
+/* =========================================
+   主文字
+========================================= */
 
 #intro-text{
+
     position:absolute;
 
-    top:42%;
-    width:100%;
+    top:50%;
+
+    left:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    width:72%;
 
     text-align:center;
 
     color:white;
 
-    font-size:58px;
+    font-size:30px;
 
-    letter-spacing:6px;
+    line-height:1.9;
 
-    line-height:1.4;
+    letter-spacing:2px;
+
+    white-space:pre-line;
 
     font-family:
-        Cambria,
-        serif;
+        "Courier New",
+        monospace;
 
     text-shadow:
-        0 0 20px rgba(255,255,255,0.2);
+        0 0 18px rgba(255,255,255,0.25);
 
-    opacity:0;
-
-    transition:opacity 1s;
+    z-index:5;
 }
 
-/* 副标题 */
+/* =========================================
+   副标题
+========================================= */
 
 #intro-sub{
+
     position:absolute;
 
-    top:56%;
+    top:78%;
+
     width:100%;
 
     text-align:center;
 
-    color:#bbbbbb;
+    color:#bdbdbd;
 
-    font-size:22px;
+    font-size:18px;
 
-    letter-spacing:3px;
+    letter-spacing:4px;
 
-    line-height:1.6;
-
-    opacity:0;
-
-    transition:opacity 1s;
+    z-index:5;
 }
 
-/* 底部提示 */
+/* =========================================
+   底部提示
+========================================= */
 
 #system-tip{
+
     position:absolute;
 
     bottom:4%;
@@ -160,19 +215,26 @@ body{
 
     text-align:center;
 
-    color:rgba(255,255,255,0.35);
+    color:
+        rgba(255,255,255,0.28);
 
-    font-size:14px;
+    font-size:13px;
 
-    letter-spacing:4px;
+    letter-spacing:5px;
+
+    z-index:5;
 }
 
-/* ENTER按钮 */
+/* =========================================
+   ENTER按钮
+========================================= */
 
 #enter-btn{
+
     position:absolute;
 
     bottom:12%;
+
     left:50%;
 
     transform:translateX(-50%);
@@ -180,49 +242,62 @@ body{
     background:transparent;
 
     border:
-        1px solid rgba(255,255,255,0.3);
+        1px solid
+        rgba(255,255,255,0.32);
 
     color:white;
 
     padding:
-        16px 42px;
+        14px 42px;
 
-    font-size:20px;
+    font-size:18px;
 
     letter-spacing:4px;
 
     cursor:pointer;
 
-    opacity:0;
+    transition:0.4s;
 
-    transition:0.5s;
+    z-index:5;
 }
 
 #enter-btn:hover{
+
     background:white;
+
     color:black;
 }
 
-/* 淡出 */
+/* =========================================
+   淡出
+========================================= */
 
 .fade-out{
-    animation:fadeOut 1.6s forwards;
+
+    animation:
+        fadeOut 1.6s forwards;
 }
 
 @keyframes fadeOut{
+
     to{
+
         opacity:0;
+
+        visibility:hidden;
     }
 }
 
-/* =======================================
+/* =========================================
    主页面
-======================================= */
+========================================= */
 
 .title-center{
+
     position:absolute;
 
     top:28px;
+
     left:50%;
 
     transform:translateX(-50%);
@@ -234,10 +309,16 @@ body{
     z-index:10;
 }
 
+/* =========================================
+   Explore
+========================================= */
+
 .explore{
+
     position:absolute;
 
     top:35px;
+
     right:60px;
 
     font-size:22px;
@@ -250,10 +331,16 @@ body{
 }
 
 .explore:hover{
+
     transform:scale(1.15);
 }
 
+/* =========================================
+   主容器
+========================================= */
+
 .container{
+
     display:flex;
 
     height:80vh;
@@ -264,19 +351,27 @@ body{
 }
 
 .left{
+
     width:45%;
+
     overflow-y:auto;
 }
 
 .right{
+
     width:55%;
+
     text-align:center;
+
     position:relative;
 }
 
-/* 输入框 */
+/* =========================================
+   输入框
+========================================= */
 
 input{
+
     width:80%;
 
     padding:15px;
@@ -294,9 +389,12 @@ input{
     color:#f5deb3;
 }
 
-/* 按钮 */
+/* =========================================
+   按钮
+========================================= */
 
 button{
+
     padding:14px 40px;
 
     margin-top:24px;
@@ -314,33 +412,43 @@ button{
     cursor:pointer;
 }
 
-/* 图片 */
+/* =========================================
+   图片
+========================================= */
 
 #img{
+
     max-width:100%;
+
     max-height:80vh;
 
     border-radius:10px;
 }
 
-/* 诗句 */
+/* =========================================
+   诗句
+========================================= */
 
 .poem-container{
+
     margin-top:30px;
 
     display:flex;
+
     flex-direction:column;
 
     gap:12px;
 }
 
 .poem-row{
+
     display:flex;
 
     align-items:flex-start;
 }
 
 .zh-line{
+
     width:45%;
 
     text-align:right;
@@ -355,6 +463,7 @@ button{
 }
 
 .en-line{
+
     width:55%;
 
     text-align:left;
@@ -366,31 +475,40 @@ button{
     color:#999;
 }
 
-/* Loader */
+/* =========================================
+   Loader
+========================================= */
 
 .loader{
+
     position:absolute;
 
     top:40%;
+
     left:45%;
 
     width:60px;
+
     height:60px;
 
     border-radius:50%;
 
     border:8px solid #333;
+
     border-top:8px solid #f5deb3;
 
     animation:spin 1s linear infinite;
 }
 
 .hidden{
+
     display:none;
 }
 
 @keyframes spin{
+
     100%{
+
         transform:rotate(360deg);
     }
 }
