@@ -9,12 +9,12 @@
 // ======================================
 
 const backgrounds = [
-    "images/bg1.jpg",
-    "images/bg2.jpg",
-    "images/bg3.jpg",
-    "images/bg4.jpg",
-    "images/bg5.jpg",
-    "images/bg6.jpg"
+    "netlify/images/bg1.jpg",
+    "netlify/images/bg2.jpg",
+    "netlify/images/bg3.jpg",
+    "netlify/images/bg4.jpg",
+    "netlify/images/bg5.jpg",
+    "netlify/images/bg6.jpg"
 ];
 
 // ======================================
