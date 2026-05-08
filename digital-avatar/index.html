@@ -1,131 +1,81 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital USTC</title>
-
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
 
-<!-- =========================================
-     开场系统
-========================================= -->
-
+<!-- 开场动画 -->
 <div id="intro-overlay">
 
+    <!-- 背景图 -->
     <div id="background-layer"></div>
 
-    <div id="overlay-dark"></div>
-
+    <!-- 故障层 -->
     <div id="glitch-layer"></div>
 
-    <div id="intro-text"></div>
+    <!-- 黑色渐层 -->
+    <div id="overlay-dark"></div>
 
-    <div id="intro-sub"></div>
-
-    <div id="system-tip">
-        CLICK ANYWHERE TO SKIP
+    <!-- 文字滚动区域 -->
+    <div id="scroll-wrapper">
+        <div id="scroll-text"></div>
     </div>
 
-    <button
-        id="enter-btn"
-        onclick="skipIntro()"
-    >
-        ENTER
-    </button>
+    <!-- Skip按钮 -->
+    <div id="skip-btn">
+        SKIP
+    </div>
 
 </div>
 
-<!-- =========================================
-     粒子背景
-========================================= -->
-
+<!-- 粒子背景 -->
 <canvas id="bg"></canvas>
 
-<!-- =========================================
-     顶栏
-========================================= -->
-
+<!-- 顶栏 -->
 <div class="topbar">
-
-    <div
-        class="explore"
-
-        onclick="
-        location.href=
-        'https://jovial-naiad-a3ecb6.netlify.app'
-        "
-    >
+    <div class="explore"
+         onclick="location.href='https://jovial-naiad-a3ecb6.netlify.app'">
         Explore
     </div>
-
 </div>
 
-<!-- =========================================
-     标题
-========================================= -->
-
+<!-- 标题 -->
 <div class="title-center">
-
     Digital USTC
-
 </div>
 
-<!-- =========================================
-     主界面
-========================================= -->
-
+<!-- 主内容 -->
 <div class="container">
 
     <div class="left">
 
-        <input
-            id="k1"
-            placeholder="Keyword 1"
-        >
+        <input id="k1" placeholder="Keyword 1">
 
-        <input
-            id="k2"
-            placeholder="Keyword 2"
-        >
+        <input id="k2" placeholder="Keyword 2">
 
-        <input
-            id="k3"
-            placeholder="Keyword 3"
-        >
+        <input id="k3" placeholder="Keyword 3">
 
         <button onclick="generate()">
-
             Generate
-
         </button>
 
-        <div
-            id="poemDisplay"
-            class="poem-container"
-        ></div>
+        <div id="poemDisplay"
+             class="poem-container">
+        </div>
 
     </div>
 
     <div class="right">
 
-        <div
-            id="loader"
-            class="loader hidden"
-        ></div>
+        <div id="loader"
+             class="loader hidden">
+        </div>
 
-        <img id="img">
+        <img id="img"/>
 
     </div>
 
@@ -134,5 +84,4 @@
 <script src="script.js"></script>
 
 </body>
-
 </html>
