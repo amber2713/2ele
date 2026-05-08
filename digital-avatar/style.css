@@ -1,12 +1,133 @@
 body{
-
     margin:0;
+    overflow:hidden;
+    background:#050505;
+    color:#f5deb3;
+    font-family:Cambria,Georgia,serif;
+}
+
+#bg{
+    position:fixed;
+    inset:0;
+    z-index:-5;
+}
+
+/* ========================================
+   开场系统
+======================================== */
+
+#intro-overlay{
+    position:fixed;
+    inset:0;
+    background:black;
+    z-index:99999;
+    overflow:hidden;
+}
+
+#background-layer{
+    position:absolute;
+    inset:0;
+
+    background-size:cover;
+    background-position:center;
+
+    filter:
+        brightness(0.6)
+        contrast(1.08);
+
+    transform:scale(1);
+
+    transition:
+        background-image 1.5s ease,
+        transform 8s linear;
+}
+
+.zoom-effect{
+    transform:scale(1.08);
+}
+
+#overlay-dark{
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.55),
+            rgba(0,0,0,0.25),
+            rgba(0,0,0,0.72)
+        );
+}
+
+#glitch-layer{
+    position:absolute;
+    inset:0;
+
+    opacity:0.12;
+
+    pointer-events:none;
+
+    background:
+    repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.025),
+        rgba(255,255,255,0.025) 2px,
+        transparent 2px,
+        transparent 4px
+    );
+}
+
+/* ========================================
+   文字滚动
+======================================== */
+
+#scroll-wrapper{
+    position:absolute;
+    inset:0;
 
     overflow:hidden;
 
-    background:#050505;
+    display:flex;
+    justify-content:center;
 
-    color:#f5deb3;
+    pointer-events:none;
+
+    z-index:5;
+
+    mask-image:linear-gradient(
+        to bottom,
+        transparent 0%,
+        white 12%,
+        white 82%,
+        transparent 100%
+    );
+
+    -webkit-mask-image:linear-gradient(
+        to bottom,
+        transparent 0%,
+        white 12%,
+        white 82%,
+        transparent 100%
+    );
+}
+
+#scroll-text{
+    position:absolute;
+
+    width:100%;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:42px;
+
+    line-height:1.45;
+
+    letter-spacing:2px;
+
+    text-shadow:
+        0 0 14px rgba(255,255,255,0.15);
 
     font-family:
         Cambria,
@@ -14,27 +135,238 @@ body{
         serif;
 }
 
-/* =======================================
-   粒子背景
-======================================= */
-
-#bg{
-
-    position:fixed;
-
-    inset:0;
-
-    z-index:-5;
+.story-line{
+    margin:8px 0;
 }
 
-/* =======================================
-   开场系统
-======================================= */
+.story-space{
+    height:24px;
+}
 
-#intro-overlay{
+/* ========================================
+   Skip按钮
+======================================== */
 
-    position:fixed;
+#skip-btn{
+    position:absolute;
 
+    top:32px;
+    right:40px;
+
+    color:white;
+
+    font-size:15px;
+
+    letter-spacing:3px;
+
+    border:
+        1px solid rgba(255,255,255,0.25);
+
+    padding:
+        10px 20px;
+
+    cursor:pointer;
+
+    z-index:20;
+
+    transition:0.3s;
+}
+
+#skip-btn:hover{
+    background:white;
+    color:black;
+}
+
+/* ========================================
+   淡出
+======================================== */
+
+.fade-out{
+    animation:fadeOut 1.5s forwards;
+}
+
+@keyframes fadeOut{
+    to{
+        opacity:0;
+    }
+}
+
+/* ========================================
+   主页面
+======================================== */
+
+.title-center{
+    position:absolute;
+    top:28px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:48px;
+
+    letter-spacing:4px;
+
+    z-index:10;
+}
+
+.explore{
+    position:absolute;
+
+    top:35px;
+    right:60px;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    z-index:10;
+}
+
+.explore:hover{
+    transform:scale(1.15);
+}
+
+.container{
+    display:flex;
+    height:80vh;
+
+    padding:40px 60px;
+
+    margin-top:140px;
+}
+
+.left{
+    width:45%;
+    overflow-y:auto;
+}
+
+.right{
+    width:55%;
+    text-align:center;
+    position:relative;
+}
+
+/* 输入框 */
+
+input{
+    width:80%;
+
+    padding:15px;
+
+    margin:10px 0;
+
+    font-size:18px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid #333;
+
+    color:#f5deb3;
+}
+
+/* 按钮 */
+
+button{
+    padding:14px 40px;
+
+    margin-top:24px;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#f5deb3;
+
+    cursor:pointer;
+}
+
+/* 图片 */
+
+#img{
+    max-width:100%;
+    max-height:80vh;
+
+    border-radius:10px;
+}
+
+/* 诗句 */
+
+.poem-container{
+    margin-top:30px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:12px;
+}
+
+.poem-row{
+    display:flex;
+    align-items:flex-start;
+}
+
+.zh-line{
+    width:45%;
+
+    text-align:right;
+
+    padding-right:20px;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#f5deb3;
+}
+
+.en-line{
+    width:55%;
+
+    text-align:left;
+
+    font-size:16px;
+
+    font-style:italic;
+
+    color:#999;
+}
+
+/* Loader */
+
+.loader{
+    position:absolute;
+
+    top:40%;
+    left:45%;
+
+    width:60px;
+    height:60px;
+
+    border-radius:50%;
+
+    border:8px solid #333;
+    border-top:8px solid #f5deb3;
+
+    animation:spin 1s linear infinite;
+}
+
+.hidden{
+    display:none;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
     inset:0;
 
     background:black;
