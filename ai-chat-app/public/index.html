@@ -21,63 +21,6 @@
             color: #3E2723;
         }
 
-        /* 1. 星光开场文字层 */
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* 使用径向渐变模拟深空星光质感 */
-            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 40px;
-            text-align: center;
-        }
-
-        /* 简单的星星装饰效果 */
-        #intro-overlay::before {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px);
-            background-size: 100px 100px;
-            opacity: 0.1;
-            z-index: -1;
-        }
-
-        #intro-text {
-            font-size: 1.8rem;
-            line-height: 1.8;
-            color: #d9c7a7;
-            max-width: 800px;
-            min-height: 1.2em;
-            text-shadow: 0 0 10px rgba(217, 199, 167, 0.3);
-        }
-
-        /* 2. 咖啡馆门口 (背景图层) */
-        #portal-view {
-            display: none; /* 初始完全隐藏 */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('./images/background.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            opacity: 0;
-            transition: opacity 1.5s ease;
-        }
-
         /* 地图图标 (右上角) */
         .map-btn {
             position: absolute;
@@ -104,40 +47,9 @@
             box-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
-        /* 进门图标 (居中) */
-        .door-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.4s ease;
-        }
-
-        .door-icon {
-            font-size: 90px;
-            color: #FFF8EF;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
-            transition: all 0.4s ease;
-        }
-
-        .door-container:hover .door-icon {
-            transform: scale(1.15);
-            color: #d9c7a7;
-            filter: drop-shadow(0 0 20px rgba(217, 199, 167, 0.8));
-        }
-
-        .door-label {
-            font-size: 1.2rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: #FFF8EF;
-            font-weight: 300;
-        }
-
-        /* 3. 对话界面层 */
+        /* 对话界面层 */
         .inside-space {
-            display: none; /* 初始完全隐藏 */
+            display: flex;
             position: absolute;
             top: 0;
             left: 0;
@@ -147,33 +59,7 @@
             z-index: 200;
             flex-direction: column;
             padding: 40px;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        /* 离开按钮 (对话界面左上角) */
-        .exit-btn {
-            position: absolute;
-            top: 30px;
-            left: 40px;
-            background: rgba(141, 110, 99, 0.2);
-            border: 1px solid rgba(93, 64, 55, 0.3);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #5D4037;
-            z-index: 210;
-        }
-
-        .exit-btn:hover {
-            transform: scale(1.2) rotate(-90deg);
-            background: #8D6E63;
-            color: white;
+            opacity: 1;
         }
 
         .inside-header { text-align: center; margin-bottom: 30px; }
@@ -208,28 +94,10 @@
 </head>
 
 <body>
-
-    <div id="intro-overlay">
-        <div id="intro-text"></div>
-    </div>
-
-    <div id="portal-view">
+    <div class="inside-space" id="insideSpace">
         <a href="https://amber2713.github.io/test/map/" class="map-btn" title="Open Map">
             <i class="fas fa-map-marked-alt"></i>
         </a>
-        
-        <div class="door-container" onclick="enterCafe()">
-            <div class="door-icon">
-                <i class="fas fa-door-open"></i>
-            </div>
-            <div class="door-label">Enter the Café</div>
-        </div>
-    </div>
-
-    <div class="inside-space" id="insideSpace">
-        <div class="exit-btn" onclick="backToPortal()" title="Go Outside">
-            <i class="fas fa-arrow-left"></i>
-        </div>
 
         <div class="inside-header">
             <h2 class="inside-title">Call Me USTC</h2>
@@ -237,13 +105,13 @@
 
         <div class="inside-content">
             <div class="girl-container">
-                <img src="./images/barista.jpg" alt="Friendly Barista" class="girl">
+                <img src="./images/guomo_suit_cutout_clean.png" alt="Friendly Barista" class="girl">
             </div>
 
             <div class="chat-container">
                 <div class="chat-messages" id="chatMessages">
                     <div class="message bot">
-                        The coffee has been sitting for a while, but you’ve come just in time.
+                        你想喝茶还是咖啡？
                     </div>
                 </div>
 
@@ -258,91 +126,11 @@
     </div>
 
 <script>
-/* ================= 核心流程逻辑 ================= */
-
-const introSentences = [
-    "You arrive at a quiet corner of the East Campus...",
-    "Seeking a place to rest your weary feet.",
-    "A secluded café stands before you, bathed in soft light.",
-    "Through the misted window, you see a 'Lady' sitting alone.",
-    "She seems to be waiting for someone... perhaps you."
-];
-
-const introContainer = document.getElementById('intro-text');
-const introOverlay = document.getElementById('intro-overlay');
-const portalView = document.getElementById('portal-view');
-const insideSpace = document.getElementById('insideSpace');
-
-// 打字机函数
-async function typeEffect(text) {
-    return new Promise(resolve => {
-        let i = 0;
-        introContainer.innerHTML = '';
-        function typing() {
-            if (i < text.length) {
-                introContainer.innerHTML += text.charAt(i++);
-                setTimeout(typing, 50); // 字符速度
-            } else {
-                setTimeout(resolve, 1500); // 句子停顿
-            }
-        }
-        typing();
-    });
-}
-
-// 序列播放
-async function playIntro() {
-    for (let sentence of introSentences) {
-        await typeEffect(sentence);
-        introContainer.style.opacity = 0;
-        await new Promise(r => setTimeout(r, 600));
-        introContainer.style.opacity = 1;
-    }
-    
-    // 淡出文字层，淡入门口背景
-    introOverlay.style.transition = "opacity 2s ease";
-    introOverlay.style.opacity = 0;
-    
-    setTimeout(() => {
-        introOverlay.style.display = "none";
-        portalView.style.display = "flex";
-        setTimeout(() => {
-            portalView.style.opacity = 1;
-        }, 50);
-    }, 2000);
-}
-
-// 点击图标进入室内
-function enterCafe() {
-    portalView.style.transition = "opacity 1s ease";
-    portalView.style.opacity = 0;
-    setTimeout(() => {
-        portalView.style.display = "none";
-        insideSpace.style.display = "flex";
-        setTimeout(() => {
-            insideSpace.style.opacity = 1;
-        }, 50);
-    }, 1000);
-}
-
-// 返回门口
-function backToPortal() {
-    insideSpace.style.opacity = 0;
-    setTimeout(() => {
-        insideSpace.style.display = "none";
-        portalView.style.display = "flex";
-        setTimeout(() => {
-            portalView.style.opacity = 1;
-        }, 50);
-    }, 800);
-}
-
-// 初始化
-window.onload = playIntro;
-
 /* ================= 聊天机器人逻辑 ================= */
 
-const chatHistory = [];
+const chatHistory = [
+    { role: 'assistant', content: '你想喝茶还是咖啡？' }
+];
 
 function addMessage(text, sender) {
     const chatMessages = document.getElementById('chatMessages');
