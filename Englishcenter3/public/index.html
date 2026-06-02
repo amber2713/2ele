@@ -42,6 +42,28 @@
         }
         .back-btn:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.6); }
 
+        /* 左上角图标 */
+        .top-left-icon {
+            position: absolute; top: 30px; left: 100px; z-index: 300;
+            width: 55px; height: 55px; background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 24px; cursor: pointer; transition: all 0.3s;
+            text-decoration: none;
+        }
+        .top-left-icon:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.6); }
+
+        /* 右上角图标 */
+        .top-right-icon {
+            position: absolute; top: 30px; right: 30px; z-index: 300;
+            width: 55px; height: 55px; background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 24px; cursor: pointer; transition: all 0.3s;
+            text-decoration: none;
+        }
+        .top-right-icon:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.6); }
+
         /* 信封图标 */
         .mail-btn {
             position: absolute; left: 40px; top: 50%; transform: translateY(-50%);
@@ -119,6 +141,14 @@
         <div class="back-btn" onclick="window.location.href='https://amber2713.github.io/sitetwo/hall/'">
             <i class="fas fa-arrow-left"></i>
         </div>
+
+        <a href="https://ssqure.netlify.app/" class="top-left-icon" target="_blank">
+            <i class="fas fa-home"></i>
+        </a>
+
+        <a href="https://sellf.netlify.app/" class="top-right-icon" target="_blank">
+            <i class="fas fa-store"></i>
+        </a>
 
         <div class="mail-btn" onclick="openAssignments()">
             <i class="fas fa-envelope-open-text"></i>
