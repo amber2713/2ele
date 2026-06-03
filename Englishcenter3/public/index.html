@@ -32,16 +32,6 @@
             opacity: 0; transition: opacity 1.5s ease;
         }
 
-        /* 返回按钮 */
-        .back-btn {
-            position: absolute; top: 30px; left: 30px; z-index: 300;
-            width: 55px; height: 55px; background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 24px; cursor: pointer; transition: all 0.3s;
-        }
-        .back-btn:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.6); }
-
         /* 左上角图标 */
         .top-left-icon {
             position: absolute; top: 30px; left: 100px; z-index: 300;
@@ -138,10 +128,7 @@
     </div>
 
     <div id="main-scene">
-        <div class="back-btn" onclick="window.location.href='https://amber2713.github.io/sitetwo/hall/'">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-
+        
         <a href="https://ssqure.netlify.app/" class="top-left-icon">
             <i class="fas fa-home"></i>
         </a>
@@ -255,7 +242,7 @@ async function handleChat() {
 }
 
 // --- 打字机效果函数 ---
-function typeWriter(element, text, speed = 30) {
+function typeWriter(element, text, speed = 20) {
     isTyping = true;
     let i = 0;
     const typingDiv = document.createElement('div');
