@@ -21,7 +21,65 @@
             color: #3E2723;
         }
 
-        /* 地图图标 (右上角) */
+        /* ================= 新增：全屏欢迎封面层 ================= */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('./images/background.jpg') center center / cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        /* 封面淡出隐藏样式 */
+        .welcome-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.05);
+        }
+
+        /* 探索图标按钮 */
+        .explore-btn {
+            font-size: 32px;
+            color: #FFF8EF;
+            background: rgba(93, 64, 55, 0.8);
+            backdrop-filter: blur(5px);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .explore-btn i {
+            margin-bottom: 4px;
+        }
+
+        .explore-btn span {
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .explore-btn:hover {
+            transform: scale(1.15);
+            background: rgba(141, 110, 99, 0.9);
+            box-shadow: 0 0 25px rgba(255,255,255,0.5);
+            border-color: #FFF8EF;
+        }
+
+        /* ================= 地图图标 (右上角) ================= */
         .map-btn {
             position: absolute;
             top: 30px;
@@ -47,7 +105,7 @@
             box-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
-        /* 对话界面层 */
+        /* ================= 对话界面层 ================= */
         .inside-space {
             display: flex;
             position: absolute;
@@ -67,7 +125,9 @@
 
         .inside-content { display: flex; height: calc(100% - 150px); gap: 40px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .girl-container { flex: 1; display: flex; justify-content: center; align-items: center; }
-        .girl { width: 100%; max-width: 400px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); animation: float 4s infinite ease-in-out; }
+        
+        /* 修改：把人物图片的最大宽度从 400px 限制为 200px (原大小的一半) */
+        .girl { width: 100%; max-width: 200px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); animation: float 4s infinite ease-in-out; }
         
         .chat-container { flex: 1; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
         .chat-messages { flex: 1; overflow-y: auto; padding: 15px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
@@ -87,15 +147,24 @@
         /* 移动端适配 */
         @media (max-width: 900px) {
             .inside-content { flex-direction: column; overflow-y: auto; }
-            .girl { max-width: 200px; }
+            /* 移动端下保持比例缩小 */
+            .girl { max-width: 120px; }
             .chat-container { height: 500px; }
         }
     </style>
 </head>
 
 <body>
+
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="explore-btn" onclick="enterSite()" title="Explore">
+            <i class="fas fa-compass fa-spin-slow"></i>
+            <span>Explore</span>
+        </div>
+    </div>
+
     <div class="inside-space" id="insideSpace">
-        <a href="https://amber2713.github.io/test/map/" class="map-btn" title="Open Map">
+        <a href="https://sakura1234.netlify.app/" class="map-btn" title="Open Map">
             <i class="fas fa-map-marked-alt"></i>
         </a>
 
@@ -126,8 +195,13 @@
     </div>
 
 <script>
-/* ================= 聊天机器人逻辑 ================= */
+/* ================= 进入网站逻辑 ================= */
+function enterSite() {
+    const overlay = document.getElementById('welcomeOverlay');
+    overlay.classList.add('hidden');
+}
 
+/* ================= 聊天机器人逻辑 ================= */
 const chatHistory = [
     { role: 'assistant', content: '你想喝茶还是咖啡？' }
 ];
