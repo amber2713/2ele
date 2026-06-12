@@ -22,8 +22,13 @@
             background-image: radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 30px);
             background-size: 80px 80px; opacity: 0.2; z-index: -1;
         }
-        #intro-text { font-size: 1.6rem; line-height: 1.8; color: #d9c7a7; max-width: 800px; transition: opacity 0.8s; }
-
+        #intro-text {
+                opacity: 0;
+                transition: opacity 0.8s ease;
+                will-change: opacity, transform;
+                transform: translateZ(0);
+                backface-visibility: hidden;
+            }
         /* 2. 主场景层 */
         #main-scene {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
