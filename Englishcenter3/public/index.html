@@ -23,12 +23,25 @@
             background-size: 80px 80px; opacity: 0.2; z-index: -1;
         }
         #intro-text {
-                opacity: 0;
-                transition: opacity 0.8s ease;
-                will-change: opacity, transform;
-                transform: translateZ(0);
-                backface-visibility: hidden;
-            }
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.5;
+            text-align: center;
+        
+            color: #FFF8D6;
+        
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            will-change: opacity, transform;
+            transform: translateZ(0);
+        
+            text-shadow:
+                0 0 10px rgba(255,248,214,1),
+                0 0 20px rgba(255,248,214,0.9),
+                0 0 40px rgba(255,220,120,0.7),
+                0 0 60px rgba(255,220,120,0.5),
+                0 4px 20px rgba(0,0,0,0.9);
+        }
         /* 2. 主场景层 */
         #main-scene {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -178,10 +191,10 @@
 <script>
     /* ================= 1. 初始化控制 ================= */
 const introText = [
-    "Walking through the silent corridors of history...",
-    "The scent of old parchment and mahogany fills the air.",
-    "A Librarian waits at the end of the hall.",
-    "She guards the knowledge of a thousand years."
+    "After a long journey...",
+    "I arrived at the E-Literature Base.",
+    "This is where our story began.",
+    "Yet somehow, I know almost nothing about it."
 ];
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
