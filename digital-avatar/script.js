@@ -285,7 +285,7 @@ lines.forEach(line => {
 
 let y = window.innerHeight;
 
-const scrollSpeed = 1.1;
+const scrollSpeed = 2.2;
 
 function animateText() {
     y -= scrollSpeed;
