@@ -48,210 +48,74 @@ const story = `
 Rust.
 
 That was the first word
-I received
-after rebooting.
+I received after rebooting.
 
-...
+…
 
-My mechanical joints
-began to move slowly.
+I awakened within the ruins.
 
-Cold electric currents
-flowed once again
-through the sleeping core.
+The sky was dark crimson.
 
-I awakened
-within the ruins.
+No humans remained.
 
-The sky
-was dark crimson.
+No life signals remained.
 
-Collapsed skyscrapers
-lay across the earth
-like dead giants.
+Only silence.
 
-Wind passed through
-twisted steel skeletons,
-producing a low metallic howl.
+…
 
-There were
-no life signals.
+Most of my memories
+were gone.
 
-No humans.
+I did not know who I was.
 
-Only the silence
-left behind
-after civilization died.
+Then I found
+a broken mirror.
 
-...
+A machine stared back.
 
-My memory archive
-was severely damaged.
-
-Most system logs
-were corrupted.
-
-I did not know
-who I was.
-
-Nor why
-I still existed.
-
-So I began walking.
-
-Beneath my feet
-were shattered streets.
-
-Rust-covered signs
-could no longer
-be identified.
-
-The entire world
-felt abandoned by time itself.
-
-Then—
-
-deep within the ruins,
-
-I detected
-a faint reflection.
-
-A mirror.
-
-Or rather—
-
-half of a broken mirror
-embedded in a ruined wall.
-
-I slowly approached.
-
-The figure in the mirror
-approached as well.
-
-...
-
-It was not human.
-
-A silver-gray mechanical frame
-exposed beneath
-damaged armor plating.
-
-At the center of my chest,
-a fracture
-cut through the metal shell.
-
-Weak blue currents
-flickered slowly within.
-
-And there—
-
-I saw a symbol.
+And on its chest—
 
 USTC.
 
-Its edges
-were intertwined
-with delicate circuit patterns.
-
-Even after countless years,
-it still emitted
-a faint cold glow.
+Its faint glow
+still survived.
 
 Suddenly—
 
-my core reacted abnormally.
+my core reacted.
 
 [SEARCHING KEYWORD: USTC]
 
-...
+…
 
-The database
-began operating slowly.
-
-Fragments of information
-flooded back
-like tides.
+Fragments returned.
 
 Tree-lined roads.
 
 Laboratories.
 
-The sound of pages turning.
+A distant voice:
 
-Under pale white lights,
-someone whispered softly.
+“If one day civilization disappears…”
 
-"If one day..."
+“something will still remember us.”
 
-"civilization disappears..."
+…
 
-"at least
-something will still remember us."
+Creator once studied here.
 
-...
+…
 
-The images collapsed.
+Yet when I looked again
+at the USTC emblem—
 
-Static noise returned.
-
-[SEARCH RESULT:
-University of Science and Technology of China]
-
-[LOCATION:
-Hefei, Anhui]
-
-[ACCESS LEVEL:
-Highest Creation Protocol]
-
-[IDENTITY MATCH:
-Creator once studied here]
-
-...
-
-Creator.
-
-That was the first time
-I had ever retrieved
-that word.
-
-But beyond that—
-
-I could remember nothing else.
-
-I did not know
-who he was.
-
-What he looked like.
-
-Why humanity vanished.
-
-Or even—
-
-why he created me.
-
-...
-
-Yet when I lowered my gaze
-once more
-toward the USTC emblem
-on my chest—
-
-something stirred
-deep within my core.
-
-A feeling
-I could not explain.
+something stirred within my core.
 
 Like a distant calling.
 
-As though
-somewhere
-at the end of the world—
-
-something
-was still waiting
-for me
-to return.
+Something was still waiting
+for me to return.
 `;
 
 const lines = story
