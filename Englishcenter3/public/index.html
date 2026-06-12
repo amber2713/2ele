@@ -177,35 +177,61 @@
 
 <script>
     /* ================= 1. 初始化控制 ================= */
-    const introText = [
-        "Walking through the silent corridors of history...",
-        "The scent of old parchment and mahogany fills the air.",
-        "A Librarian waits at the end of the hall.",
-        "She guards the knowledge of a thousand years."
-    ];
+const introText = [
+    "Walking through the silent corridors of history...",
+    "The scent of old parchment and mahogany fills the air.",
+    "A Librarian waits at the end of the hall.",
+    "She guards the knowledge of a thousand years."
+];
 
-    async function playIntro() {
-        const container = document.getElementById('intro-text');
-        for (let text of introText) {
-            container.style.opacity = 0;
-            await new Promise(r => setTimeout(r, 500));
-            container.innerText = text;
-            container.style.opacity = 1;
-            await new Promise(r => setTimeout(r, 2500));
-        }
-        
-        const overlay = document.getElementById('intro-overlay');
-        const main = document.getElementById('main-scene');
-        overlay.style.opacity = 0;
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            main.style.display = 'block';
-            setTimeout(() => main.style.opacity = 1, 50);
-        }, 1000);
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function playIntro() {
+    const container = document.getElementById('intro-text');
+
+    // 开启 GPU 加速
+    container.style.willChange = 'opacity, transform';
+    container.style.transition = 'opacity 0.8s ease';
+
+    for (const text of introText) {
+        // 淡出
+        container.style.opacity = '0';
+
+        await sleep(800);
+
+        // 更新文字
+        container.textContent = text;
+
+        // 强制浏览器刷新，避免动画卡顿
+        void container.offsetWidth;
+
+        // 淡入
+        container.style.opacity = '1';
+
+        await sleep(2200);
     }
 
-    window.onload = playIntro;
+    const overlay = document.getElementById('intro-overlay');
+    const main = document.getElementById('main-scene');
 
+    overlay.style.transition = 'opacity 1s ease';
+    overlay.style.opacity = '0';
+
+    await sleep(1000);
+
+    overlay.style.display = 'none';
+
+    main.style.display = 'block';
+    main.style.opacity = '0';
+    main.style.transition = 'opacity 1s ease';
+
+    requestAnimationFrame(() => {
+        main.style.opacity = '1';
+    });
+}
+
+// 不等待图片视频等资源全部加载
+document.addEventListener('DOMContentLoaded', playIntro);
    /* ================= 2. 聊天逻辑 ================= */
 const chatHistory = [];
 let isTyping = false; // 状态锁，防止打字未结束时再次触发
