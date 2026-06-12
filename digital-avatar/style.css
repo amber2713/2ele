@@ -209,6 +209,17 @@ body{
     z-index:10;
 }
 
+.subtitle{
+    margin-top:10px;
+    font-size:18px;
+    font-family:Cambria, serif;
+    color:rgba(255,255,255,0.85);
+    font-style:italic;
+    letter-spacing:2px;
+    text-shadow:
+        0 0 5px rgba(255,255,255,0.3);
+}
+
 .explore{
     position:absolute;
 
