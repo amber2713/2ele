@@ -232,3 +232,69 @@ function animateParticles() {
 }
 
 animateParticles();
+
+// ========================================
+// Generate
+// ========================================
+
+async function generate() {
+
+    const k1 = document.getElementById("k1").value;
+    const k2 = document.getElementById("k2").value;
+    const k3 = document.getElementById("k3").value;
+
+    const loader =
+        document.getElementById("loader");
+
+    const img =
+        document.getElementById("img");
+
+    const poem =
+        document.getElementById("poemDisplay");
+
+    loader.classList.remove("hidden");
+
+    try {
+
+        const res = await fetch(
+            "/.netlify/functions/generate",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    k1,
+                    k2,
+                    k3
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        poem.innerHTML = `
+            <div>${data.poem || ""}</div>
+            <br>
+            <div>${data.poem_en || ""}</div>
+        `;
+
+        if (data.image) {
+            img.src =
+                `data:image/png;base64,${data.image}`;
+        }
+
+    } catch (err) {
+
+        poem.innerHTML =
+            "Generation failed.";
+
+        console.error(err);
+
+    } finally {
+
+        loader.classList.add("hidden");
+    }
+}
+
+window.generate = generate;
