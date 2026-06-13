@@ -271,7 +271,20 @@ async function generate() {
             }
         );
 
-        const data = await res.json();
+        if (!res.ok) {
+
+            const errorText = await res.text();
+        
+            console.error("Server Error:");
+            console.error(errorText);
+        
+            poem.innerHTML =
+                "Server Error:<br>" + errorText;
+        
+            return;
+        }
+
+const data = await res.json();
 
         poem.innerHTML = `
             <div>${data.poem || ""}</div>
