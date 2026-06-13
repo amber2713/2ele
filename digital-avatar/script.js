@@ -36,9 +36,9 @@ switchBackground();
 
 setTimeout(() => switchBackground(), 7000);
 setTimeout(() => switchBackground(), 14000);
+setTimeout(() => switchBackground(), 20000);
 setTimeout(() => switchBackground(), 21000);
 setTimeout(() => switchBackground(), 28000);
-setTimeout(() => switchBackground(), 36000);
 
 // ========================================
 // 故事文本
