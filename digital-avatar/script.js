@@ -35,10 +35,10 @@ function switchBackground() {
 switchBackground();
 
 setTimeout(() => switchBackground(), 7000);
-setTimeout(() => switchBackground(), 14000);
+setTimeout(() => switchBackground(), 12000);
+setTimeout(() => switchBackground(), 18000);
 setTimeout(() => switchBackground(), 20000);
-setTimeout(() => switchBackground(), 21000);
-setTimeout(() => switchBackground(), 28000);
+setTimeout(() => switchBackground(), 23000);
 
 // ========================================
 // 故事文本
