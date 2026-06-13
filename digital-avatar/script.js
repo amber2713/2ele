@@ -223,7 +223,7 @@ function animateParticles() {
         );
 
         ctx.fillStyle =
-             "rgba(0,255,255,0.8)";
+             "rgba(245,222,179,0.7)";
 
         ctx.fill();
     });
