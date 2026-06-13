@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 
 function buildAuth(apiKey, apiSecret, host, path) {
 
-```
+
 const date = new Date().toUTCString();
 
 const signatureOrigin =
@@ -21,13 +21,11 @@ return {
     authorization,
     date
 };
-```
 
 }
 
 exports.handler = async function (event) {
 
-```
 try {
 
     const { k1, k2, k3 } =
@@ -60,7 +58,6 @@ try {
                     {
                         role: "user",
                         content: `
-```
 
 Return ONLY valid JSON:
 
@@ -83,10 +80,18 @@ temperature: 0.3
 }
 );
 
-```
     const qwenData =
         await qwenRes.json();
+    if (!qwenRes.ok) {
 
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                error: "Qwen API Error",
+                raw: qwenData
+            })
+        };
+    }
     console.log(
         "QWEN RAW:",
         JSON.stringify(qwenData)
@@ -175,8 +180,20 @@ temperature: 0.3
         }
     );
 
-    const imgData =
-        await imgRes.json();
+    const imgText = await imgRes.text();
+
+    console.log("IMAGE RAW:", imgText);
+    
+    let imgData;
+    
+    try {
+        imgData = JSON.parse(imgText);
+    } catch (e) {
+        throw new Error(
+            "Image API returned invalid JSON:\n" +
+            imgText
+        );
+    }
 
     console.log(
         "IMAGE RAW:",
@@ -249,6 +266,5 @@ temperature: 0.3
         })
     };
 }
-```
 
 };
