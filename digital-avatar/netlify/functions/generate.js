@@ -21,7 +21,7 @@ exports.handler = async function (event) {
         const keywords = `${k1} ${k2} ${k3}`;
 
         // ===== Qwen3 =====
-        const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions", {
+        const qwenRes = await fetch("https://maas-api.cn-huabei-1.xf-yun.com/v2/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
